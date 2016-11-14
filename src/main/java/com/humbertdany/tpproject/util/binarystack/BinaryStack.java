@@ -2,49 +2,49 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.humbertdany.tpproject.util.tree;
+package com.humbertdany.tpproject.util.binarystack;
 
 /**
  *
  * @author dhumbert
  */
-public class BinaryTree<T extends Comparable> {
+public class BinaryStack<T extends Node> {
 
 	public final static int ORIENTATION_RIGHT = 1;
 	public final static int ORIENTATION_LEFT = -1;
-	private Node<T> root;
+	private T root;
 
-	public BinaryTree(final Node<T> root) {
+	public BinaryStack(final T root) {
 		this.root = root;
 	}
 
-	public void add(final Node<T> parent, final Node<T> child, final int orientation) {
+	public void add(final T parent, final T child, final int orientation) {
 		switch (orientation) {
-			case BinaryTree.ORIENTATION_LEFT:
+			case BinaryStack.ORIENTATION_LEFT:
 				parent.setLeft(child);
 				break;
-			case BinaryTree.ORIENTATION_RIGHT:
+			case BinaryStack.ORIENTATION_RIGHT:
 				parent.setRight(child);
 				break;
 		}
 	}
 
 	/**
-	 * Return true if item is one of the items in the binary sort tree to which
+	 * Return true if item is one of the items in the binary sort binarystack to which
 	 * root points. Return false if not.
 	 */
 	public boolean contains(final T item) {
 		return this.treeContains(this.root, item);
 	}
 
-	private boolean treeContains(final Node root, final T item) {
+	private boolean treeContains(final Node root, final Node item) {
 		if (root == null) {
 			// Tree is empty, so it certainly doesn't contain item.
 			return false;
-		} else if (item.equals(root.getKey())) {
+		} else if (item.equals(root)) {
 			// Yes, the item has been found in the root node.
 			return true;
-		} else if (item.compareTo(root.getKey()) < 0) {
+		} else if (item.greaterThen(root)) { // TODO make sure this is the right order
 			// If the item occurs, it must be in the left subtree.
 			return treeContains(root.getLeft(), item);
 		} else {
@@ -54,12 +54,12 @@ public class BinaryTree<T extends Comparable> {
 	}
 
 	/**
-	 * Print all the items in the tree to which root points. The item in the
+	 * Print all the items in the binarystack to which root points. The item in the
 	 * left subtree is printed first, followed by the items in the right subtree
 	 * and then the item in the root node.
 	 */
 	public void printPostOrder() {
-		System.out.println("BinaryTree print:");
+		System.out.println("BinaryStack print:");
 		this.postOrderPrint(root);
 		System.out.println("--end");
 	}
@@ -73,12 +73,12 @@ public class BinaryTree<T extends Comparable> {
 	}
 
 	/**
-	 * Print all the items in the tree to which root points. The item in the
+	 * Print all the items in the binarystack to which root points. The item in the
 	 * left subtree is printed first, followed by the item in the root node and
 	 * then the items in the right subtree.
 	 */
 	public void printInOrder() {
-		System.out.println("BinaryTree print:");
+		System.out.println("BinaryStack print:");
 		this.inOrderPrint(root);
 		System.out.println("--end");
 	}
@@ -94,7 +94,7 @@ public class BinaryTree<T extends Comparable> {
 	/**
 	 * Return root element
 	 */
-	public Node<T> getRoot(){
+	public T getRoot(){
 		return this.root;
 	}
 }

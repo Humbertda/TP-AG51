@@ -14,30 +14,35 @@ import java.util.Collection;
  * @author dhumbert
  */
 public class SortingInsert<T extends Comparable> extends ASortingAlgorithm<T> {
-    
+
 	public SortingInsert(final ArrayFactory<T> arrayFactory){
 		super(arrayFactory);
 	}
-	
-    @Override
-    public Collection<T> sort(final T[] A) {
-        // a negative integer, zero, or a positive integer as this object 
-        // is less than, equal to, or greater than the specified object.
-        for(int j = 1; j < A.length ; j++) {
-            final T key = A[j];
-            int i = j-1;
-            while(i > 0 && A[i].compareTo(key) > 0){
-                A[i+1] = A[i]; 
-                i--;
-            }
-            A[i+1] = key;
-        }
-        return Arrays.asList(A);
-      }
-    
-    @Override 
-    public String getAlgorihmName(){
-        return "Insert"; 
-    }
-    
+
+	@Override
+	public Collection<T> sort(final T[] a) {
+		insertionSort(a);
+		return Arrays.asList(a);
+	}
+
+	private void insertionSort(final T[] arr) {
+		int i, j;
+		T newValue;
+		for (i = 1; i < arr.length; i++) {
+			newValue = arr[i];
+			j = i;
+			while (j > 0 && arr[j - 1].compareTo(newValue) > 0) {
+				arr[j] = arr[j - 1];
+				j--;
+			}
+			arr[j] = newValue;
+		}
+	}
+
+
+	@Override
+	public String getAlgorithmName(){
+		return "Insert";
+	}
+
 }

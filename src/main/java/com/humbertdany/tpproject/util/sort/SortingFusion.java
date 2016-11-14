@@ -24,7 +24,7 @@ public class SortingFusion<T extends Comparable> extends ASortingAlgorithm<T>{
     } 
     
     @Override 
-    public String getAlgorihmName(){
+    public String getAlgorithmName(){
         return "Fusion";
     }
     

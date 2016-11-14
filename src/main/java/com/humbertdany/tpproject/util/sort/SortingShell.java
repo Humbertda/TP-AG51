@@ -39,7 +39,7 @@ public class SortingShell<T extends Comparable> extends ASortingAlgorithm<T> {
 	}
 
 	@Override
-	public String getAlgorihmName() {
+	public String getAlgorithmName() {
 		return "Shell";
 	}
 }

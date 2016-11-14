@@ -28,5 +28,10 @@ public class ArrayListIntegerGenerator extends ArrayListGenerator<Integer>{
     Integer buildObject() {
         return random.nextInt((max - min) + 1) + min;
     }
+
+    @Override
+    public Integer[] buildArray(int dimension) {
+        return new Integer[dimension];
+    }
     
 }

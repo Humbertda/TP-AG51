@@ -4,13 +4,15 @@
  */
 package com.humbertdany.tpproject.util.generator;
 
+import com.humbertdany.tpproject.util.factory.ArrayFactory;
+
 import java.util.ArrayList;
 
 /**
  *
  * @author dhumbert
  */
-abstract public class ArrayListGenerator<T extends Comparable> {
+abstract public class ArrayListGenerator<T extends Comparable> extends ArrayFactory<T> {
     abstract T buildObject();
     
     final public ArrayList<T> generate(final int count){

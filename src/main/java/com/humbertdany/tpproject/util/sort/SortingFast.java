@@ -70,7 +70,7 @@ public class SortingFast<T extends Comparable> extends ASortingAlgorithm<T>{
     }
     
     @Override 
-    public String getAlgorihmName(){
+    public String getAlgorithmName(){
         return "FAST"; 
     }
 }
