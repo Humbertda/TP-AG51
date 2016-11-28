@@ -8,7 +8,7 @@ package com.humbertdany.tpproject.util.binarystack;
  *
  * @author dhumbert
  */
-public class Node<T extends Comparable> {
+public class Node<T extends Comparable<T>> {
 
 	private T key;
 	private Node<T> left;
@@ -43,7 +43,6 @@ public class Node<T extends Comparable> {
 	public Node<T> getRight() {
 		return right;
 	}
-
 
 	final public boolean greaterThen(final Node<T> t){
 		return this.getKey().compareTo(t.getKey()) > 0;
