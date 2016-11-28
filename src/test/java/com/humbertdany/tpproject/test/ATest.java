@@ -7,4 +7,14 @@ abstract public class ATest {
 
 	abstract public void launch();
 
+	public static void separeLine(){
+		System.out.println();
+		System.out.println("#----------------------------------#");
+		System.out.println();
+	}
+
+	protected final void separe(){
+		ATest.separeLine();
+	}
+
 }
