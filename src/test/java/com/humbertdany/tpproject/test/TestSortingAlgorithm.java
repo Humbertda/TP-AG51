@@ -4,9 +4,8 @@ import com.humbertdany.tpproject.util.chrono.Chrono;
 import com.humbertdany.tpproject.util.factory.ArrayFactory;
 import com.humbertdany.tpproject.util.generator.ArrayListGenerator;
 import com.humbertdany.tpproject.util.sort.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+
+import java.util.*;
 
 /**
  *
@@ -16,6 +15,8 @@ public class TestSortingAlgorithm<T extends Comparable> extends ATest {
     
     private final ArrayList<ASortingAlgorithm<T>> sortingAlgo;
 	private final ArrayListGenerator<T> gen;
+
+	public final int NUMBER_OF_TEST = 20;
 
     /**
      *
@@ -31,64 +32,83 @@ public class TestSortingAlgorithm<T extends Comparable> extends ATest {
             new SortingFast<>(this.gen)
         ));
     }
-	
-	private ArrayList<ResultEntry> startTest(final ArrayList<T> toSort) throws Exception {
-		return this.startTest(toSort.toArray(this.gen.buildArray(toSort.size())));
-	}
-    
-    private ArrayList<ResultEntry> startTest(final T[] toSort) throws Exception {
-	    final ArrayList<ResultEntry> results = new ArrayList<>();
-        for(ASortingAlgorithm<T> i : this.sortingAlgo){
-            final Chrono chr = new Chrono();
-            chr.start();
-            final Collection<T> sort = i.sort(toSort);
-            chr.stop();
-	        if(i.isSorted(sort)){
-		        results.add(new ResultEntry(i, chr.getMilliSec()));
-	        } else {
-		        throw new Exception("The array was not sorted corretly by the " + i.getAlgorithmName() + " algorithm");
-	        }
-        }
-	    return results;
-    }
 
     final public void launch(){
 
 	    ArrayList<Integer> dimensionToTest = new ArrayList<>();
 	    dimensionToTest.addAll(Arrays.asList(1000,2000,3000,5000,10000,20000,50000,100000));
 
-	    for(int dimension : dimensionToTest){
-		    try {
-			    final ArrayList<T> generated = this.gen.generate(dimension);
-			    System.out.println("   > Results for an array of " + dimension + " elements");
-			    final ArrayList<ResultEntry> res = this.startTest(generated);
-			    for(ResultEntry r : res){
-				    //TODO multiple tests and return as excel array
-				    r.displayResults();
+	    final Map<Integer, ResultEntry> results = new HashMap<>();
+	    for(int i = 0; i < this.sortingAlgo.size(); i++){
+		    results.put(i, new ResultEntry(this.sortingAlgo.get(i)));
+	    }
+
+	    for(int i = 0 ; i < NUMBER_OF_TEST; i++){
+		    log("Running iteration " + (i+1) + " of " + NUMBER_OF_TEST);
+		    for(int dimension : dimensionToTest){
+			    log("  Testing for an array of dimension " + dimension);
+			    try {
+				    final ArrayList<T> generated = this.gen.generate(dimension);
+				    final T[] ts = generated.toArray(this.gen.buildArray(generated.size()));
+				    for(int j = 0; j < this.sortingAlgo.size(); j++){
+					    final ResultEntry currentAlgo = results.get(j);
+					    final ASortingAlgorithm<T> algo = currentAlgo.getAlgo();
+					    log("      Running test for algorithm " + algo.getAlgorithmName());
+					    final Chrono chr = new Chrono();
+					    chr.start();
+					    final Collection<T> sort = algo.sort(ts);
+					    chr.stop();
+					    if(algo.isSorted(sort)){
+						    currentAlgo.add(chr.getMilliSec());
+					    } else {
+						    throw new Exception("The array was not sorted corretly by the " + algo.getAlgorithmName() + " algorithm");
+					    }
+				    }
+				    log("");
+			    } catch (Exception e) {
+				    e.printStackTrace();
 			    }
-			    System.out.println();
-		    } catch (Exception e) {
-			    e.printStackTrace();
 		    }
+	    }
+
+	    for(final ResultEntry r : results.values()){
+		    r.displayResults();
 	    }
 
     }
 
 	private class ResultEntry {
 
-		private final ASortingAlgorithm algo;
-		private final long result;
+		private final ASortingAlgorithm<T> algo;
 
-		ResultEntry(final ASortingAlgorithm a, final long result){
+		//TODO Separate dimensions results
+		private final List<Long> result = new ArrayList<>();
+
+		ResultEntry(final ASortingAlgorithm<T> a){
 			this.algo = a;
-			this.result = result;
+		}
+
+		void add(long r){
+			this.result.add(r);
 		}
 
 		void displayResults(){
-			System.out.println(this.algo.getAlgorithmName() + " sorted the array in " + this.result + "ms");
+			log(this.algo.getAlgorithmName() + " sorted the array in " + this.getAverageExecutionTime() + "ms");
+		}
+
+		long getAverageExecutionTime(){
+			int numberOfRes = result.size();
+			long totalDuration = 0;
+			for(long l : result){
+				totalDuration += l;
+			}
+			return totalDuration/numberOfRes;
 		}
 
 
+		ASortingAlgorithm<T> getAlgo() {
+			return algo;
+		}
 	}
     
 }
