@@ -4,7 +4,8 @@
  */
 package com.humbertdany.tpproject.util.prioritystack;
 
-import com.humbertdany.tpproject.util.binarystack.BinaryStack;
+import com.humbertdany.tpproject.util.binarystack.v1.BinaryStack;
+import com.humbertdany.tpproject.util.factory.ArrayFactory;
 
 /**
  *
@@ -15,7 +16,12 @@ public class PriorityStack {
 	final private BinaryStack<StackNode> tree;
 	
 	public PriorityStack(){
-		tree = new BinaryStack<>(new StackNode("root"));
+		tree = new BinaryStack<>(new ArrayFactory<StackNode>() {
+			@Override
+			public StackNode[] buildArray(int dimension) {
+				return new StackNode[dimension];
+			}
+		}, new StackNode("root"));
 		// TODO:: implements this
 		// What I could check:  http://codereview.stackexchange.com/questions/98105/priority-stack-in-java
 	}

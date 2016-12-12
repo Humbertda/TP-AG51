@@ -1,6 +1,6 @@
 package com.humbertdany.tpproject.util.prioritystack;
 
-import com.humbertdany.tpproject.util.binarystack.Node;
+import com.humbertdany.tpproject.util.binarystack.v1.Node;
 
 /**
  * StackNode used in the priority stack

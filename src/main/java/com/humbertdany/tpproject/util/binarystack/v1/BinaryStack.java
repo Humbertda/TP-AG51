@@ -1,20 +1,20 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package com.humbertdany.tpproject.util.binarystack;
+package com.humbertdany.tpproject.util.binarystack.v1;
+
+import com.humbertdany.tpproject.util.binarystack.ABinaryStack;
+import com.humbertdany.tpproject.util.factory.ArrayFactory;
 
 /**
  *
  * @author dhumbert
  */
-public class BinaryStack<T extends Node> {
+public class BinaryStack<T extends Node> extends ABinaryStack<T> {
 
 	public final static int ORIENTATION_RIGHT = 1;
 	public final static int ORIENTATION_LEFT = -1;
 	private T root;
 
-	public BinaryStack(final T root) {
+	public BinaryStack(final ArrayFactory<T> factory, final T root) {
+		super(factory);
 		this.root = root;
 	}
 

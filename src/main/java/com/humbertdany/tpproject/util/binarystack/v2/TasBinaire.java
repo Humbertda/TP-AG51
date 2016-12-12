@@ -1,32 +1,37 @@
-package com.humbertdany.tpproject.util.tasbinaire;
+package com.humbertdany.tpproject.util.binarystack.v2;
 
+import com.humbertdany.tpproject.util.binarystack.ABinaryStack;
 import com.humbertdany.tpproject.util.factory.ArrayFactory;
 
 /**
  *
  * @author Mitsu
  */
-public class TasBinaire<T extends Comparable<T>> {
+public class TasBinaire<T extends Comparable<T>> extends ABinaryStack<T> {
 
 	private static final int CAPACITY = 2;
 
-	private int size;            // Nombre d'éléments dans le tas
-	private T[] heap;     // Array
-	final private ArrayFactory<T> arrayFactory;
+	/**
+	 * Nombre d'éléments dans le tas
+	 */
+	private int size;
+
+	/**
+	 * Array
+	 */
+	private T[] heap;
 
 	public TasBinaire(final ArrayFactory<T> factory) {
-		size = 0;
-		this.arrayFactory = factory;
-		heap = arrayFactory.buildArray(CAPACITY);
+		this(factory, factory.buildArray(CAPACITY));
 	}
 
 	/**
 	 * Construit le tas binaire à partir d'une array
 	 */
 	public TasBinaire(final ArrayFactory<T> factory, T[] array) {
+		super(factory);
 		size = array.length;
-		this.arrayFactory = factory;
-		heap = arrayFactory.buildArray(array.length + 1);
+		heap = factory.buildArray(array.length + 1);
 
 		System.arraycopy(array, 0, heap, 1, array.length);
 
