@@ -10,7 +10,7 @@ public class TestPriorityStack extends ATest {
 	public void launch() {
 		final PriorityStack q = new PriorityStack();
 		q.insert(new StackNode("Test"), 5);
-		System.out.println(q.extractMax().getKey());
+		log(q.extractMax().getKey());
 	}
 
 }

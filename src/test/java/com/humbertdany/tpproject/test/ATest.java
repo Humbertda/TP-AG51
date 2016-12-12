@@ -17,4 +17,8 @@ abstract public class ATest {
 		ATest.separeLine();
 	}
 
+	protected final void log(final Object o){
+		System.out.println(o.toString());
+	}
+
 }

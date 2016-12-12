@@ -3,11 +3,13 @@ package com.humbertdany.tpproject.util.binarystack.v2;
 import com.humbertdany.tpproject.util.binarystack.ABinaryStack;
 import com.humbertdany.tpproject.util.factory.ArrayFactory;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Mitsu
  */
-public class TasBinaire<T extends Comparable<T>> extends ABinaryStack<T> {
+public class TasBinaire<T extends Comparable<T>> extends ABinaryStack<T> implements Serializable {
 
 	private static final int CAPACITY = 2;
 
@@ -22,7 +24,7 @@ public class TasBinaire<T extends Comparable<T>> extends ABinaryStack<T> {
 	private T[] heap;
 
 	public TasBinaire(final ArrayFactory<T> factory) {
-		this(factory, factory.buildArray(CAPACITY));
+		this(factory, factory.buildArray(0));
 	}
 
 	/**
@@ -116,6 +118,17 @@ public class TasBinaire<T extends Comparable<T>> extends ABinaryStack<T> {
 		}
 
 		heap[pos] = x;
+	}
+
+	/**
+	 * Add all the elements in parameters to the Binary stack
+	 * @param elements all the elements to add
+	 */
+	@SafeVarargs
+	public final void insertAll(final T... elements){
+		for(T elem : elements){
+			this.insert(elem);
+		}
 	}
 
 	private void doubleSize() {
