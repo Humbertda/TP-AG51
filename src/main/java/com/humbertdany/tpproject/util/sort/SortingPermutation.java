@@ -36,21 +36,9 @@ public class SortingPermutation<T extends Comparable> extends ASortingAlgorithm<
 	{
 		// if array is not sorted then shuffle the
 		// array again
-		while (!isSorted(a))
+		while (!isSorted(a)) {
 			shuffle(a);
-	}
-
-	/**
-	 * To generate permuatation of the array
-	 * @param a
-	 */
-	private void shuffle(T[] a)
-	{
-		// Math.random() returns a double positive
-		// value, greater than or equal to 0.0 and
-		// less than 1.0.
-		for (int i=1; i < a.length; i++)
-			swap(a, i, (int)(Math.random()*i));
+		}
 	}
     
     @Override 

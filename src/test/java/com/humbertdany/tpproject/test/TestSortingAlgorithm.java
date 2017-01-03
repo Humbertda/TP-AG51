@@ -6,6 +6,7 @@ import com.humbertdany.tpproject.util.generator.ArrayListGenerator;
 import com.humbertdany.tpproject.util.sort.*;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  *
@@ -16,7 +17,7 @@ public class TestSortingAlgorithm<T extends Comparable> extends ATest {
     private final ArrayList<ASortingAlgorithm<T>> sortingAlgo;
 	private final ArrayListGenerator<T> gen;
 
-	public final int NUMBER_OF_TEST = 20;
+	public final int NUMBER_OF_TEST = 25;
 
     /**
      *
@@ -26,7 +27,7 @@ public class TestSortingAlgorithm<T extends Comparable> extends ATest {
 	    this.gen = gen;
         sortingAlgo.addAll(Arrays.asList( 
             new SortingInsert<>(this.gen),
-            new SortingPermutation<>(this.gen),
+            //new SortingPermutation<>(this.gen),
             new SortingShell<>(this.gen),
             new SortingFusion<>(this.gen),
             new SortingFast<>(this.gen)
@@ -48,9 +49,9 @@ public class TestSortingAlgorithm<T extends Comparable> extends ATest {
 		    for(int dimension : dimensionToTest){
 			    log("  Testing for an array of dimension " + dimension);
 			    try {
-				    final ArrayList<T> generated = this.gen.generate(dimension);
-				    final T[] ts = generated.toArray(this.gen.buildArray(generated.size()));
 				    for(int j = 0; j < this.sortingAlgo.size(); j++){
+					    final ArrayList<T> generated = this.gen.generate(dimension);
+					    final T[] ts = generated.toArray(this.gen.buildArray(generated.size()));
 					    final ResultEntry currentAlgo = results.get(j);
 					    final ASortingAlgorithm<T> algo = currentAlgo.getAlgo();
 					    log("      Running test for algorithm " + algo.getAlgorithmName());
@@ -59,7 +60,7 @@ public class TestSortingAlgorithm<T extends Comparable> extends ATest {
 					    final Collection<T> sort = algo.sort(ts);
 					    chr.stop();
 					    if(algo.isSorted(sort)){
-						    currentAlgo.add(chr.getMilliSec());
+						    currentAlgo.add(dimension, chr.getMilliSec());
 					    } else {
 						    throw new Exception("The array was not sorted corretly by the " + algo.getAlgorithmName() + " algorithm");
 					    }
@@ -70,6 +71,8 @@ public class TestSortingAlgorithm<T extends Comparable> extends ATest {
 			    }
 		    }
 	    }
+
+	    log("\nDisplaying results:\n");
 
 	    for(final ResultEntry r : results.values()){
 		    r.displayResults();
@@ -82,24 +85,35 @@ public class TestSortingAlgorithm<T extends Comparable> extends ATest {
 		private final ASortingAlgorithm<T> algo;
 
 		//TODO Separate dimensions results
-		private final List<Long> result = new ArrayList<>();
+		private final TreeMap<Integer, List<Long>> result = new TreeMap<>();
 
 		ResultEntry(final ASortingAlgorithm<T> a){
 			this.algo = a;
 		}
 
-		void add(long r){
-			this.result.add(r);
+		void add(int arrayDimension, long results){
+			if(!result.containsKey(arrayDimension)){
+				result.put(arrayDimension, new ArrayList<>());
+			}
+			this.result.get(arrayDimension).add(results);
 		}
 
 		void displayResults(){
-			log(this.algo.getAlgorithmName() + " sorted the array in " + this.getAverageExecutionTime() + "ms");
+			final StringBuilder sb = new StringBuilder();
+			sb.append("Here is the results for the ").append(algo.getAlgorithmName()).append(" algorithm : \n");
+			for(Map.Entry<Integer, List<Long>> entry : result.entrySet()){
+				sb      .append("   ").append("For a dimension of ").append(entry.getKey())
+						.append(", the algorithm sorted the array in average in ms :   ")
+						.append(this.getAverageExecutionTime(entry.getValue())).append("ms\n")
+				;
+			}
+			log(sb);
 		}
 
-		long getAverageExecutionTime(){
+		long getAverageExecutionTime(final List<Long> results){
 			int numberOfRes = result.size();
 			long totalDuration = 0;
-			for(long l : result){
+			for(long l : results){
 				totalDuration += l;
 			}
 			return totalDuration/numberOfRes;

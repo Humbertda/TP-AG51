@@ -6,6 +6,7 @@ package com.humbertdany.tpproject.util.sort;
 
 import com.humbertdany.tpproject.util.factory.ArrayFactory;
 
+import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -31,9 +32,11 @@ public abstract class ASortingAlgorithm<T extends Comparable> implements ISortin
     }
 
 	final public boolean isSorted(final T[] a) {
-		for(int i=1; i < a.length; i++)
-			if(a[i-1].compareTo(a[i]) > 0)
+		for(int i=1; i < a.length; i++) {
+			if (a[i - 1].compareTo(a[i]) > 0) {
 				return false;
+			}
+		}
 		return true;
 	}
 
@@ -43,6 +46,22 @@ public abstract class ASortingAlgorithm<T extends Comparable> implements ISortin
 			tmp[i] = a.iterator().next();
 		}
 		return this.isSorted(tmp);
+	}
+
+	/**
+	 * Mix all the values
+	 * @param a the array to shuffle
+	 */
+	protected final void shuffle(T[] a) {
+		// Math.random() returns a double positive
+		// value, greater than or equal to 0.0 and
+		// less than 1.0.
+		for (int i=1; i < a.length; i++)
+			swap(a, i, (int)(Math.random()*i));
+	}
+
+	protected final void log(final Serializable s){
+		System.out.println(s.toString());
 	}
 
 }
