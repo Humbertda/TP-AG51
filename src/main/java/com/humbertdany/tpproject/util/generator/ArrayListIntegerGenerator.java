@@ -1,13 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.humbertdany.tpproject.util.generator;
 
 import java.util.Random;
 
 /**
- *
+ * Class who generate random integers
+ * between min and max
  * @author dhumbert
  */
 public class ArrayListIntegerGenerator extends ArrayListGenerator<Integer>{
