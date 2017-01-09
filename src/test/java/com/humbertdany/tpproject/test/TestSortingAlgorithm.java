@@ -82,7 +82,6 @@ public class TestSortingAlgorithm<T extends Comparable> extends ATest {
 
 		private final ASortingAlgorithm<T> algo;
 
-		//TODO Separate dimensions results
 		private final TreeMap<Integer, List<Long>> result = new TreeMap<>();
 
 		ResultEntry(final ASortingAlgorithm<T> a){
