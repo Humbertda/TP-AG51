@@ -6,20 +6,20 @@ import com.humbertdany.tpproject.util.factory.ArrayFactory;
 import java.io.Serializable;
 
 /**
- *
- * @author Mitsu
+ * Tas Binaire v2
+ * Class used in TP2
  */
 public class TasBinaire<T extends Comparable<T>> extends ABinaryStack<T> implements Serializable {
 
 	private static final int CAPACITY = 2;
 
 	/**
-	 * Nombre d'éléments dans le tas
+	 * Number of elements
 	 */
 	private int size;
 
 	/**
-	 * Array
+	 * heap array
 	 */
 	private T[] heap;
 
@@ -28,7 +28,7 @@ public class TasBinaire<T extends Comparable<T>> extends ABinaryStack<T> impleme
 	}
 
 	/**
-	 * Construit le tas binaire à partir d'une array
+	 *  construct the binary stack from an array
 	 */
 	public TasBinaire(final ArrayFactory<T> factory, T[] array) {
 		super(factory);
@@ -68,7 +68,7 @@ public class TasBinaire<T extends Comparable<T>> extends ABinaryStack<T> impleme
 	}
 
 	/**
-	 * Trie une array.
+	 * sort the binary stack
 	 */
 	public void heapSort(T[] array) {
 		size = array.length;
@@ -89,7 +89,7 @@ public class TasBinaire<T extends Comparable<T>> extends ABinaryStack<T> impleme
 	}
 
 	/**
-	 * Supprime l'élément du haut.
+	 * delete the top element
 	 */
 	public T deleteMin() throws RuntimeException {
 		if (size == 0) {
@@ -102,21 +102,18 @@ public class TasBinaire<T extends Comparable<T>> extends ABinaryStack<T> impleme
 	}
 
 	/**
-	 * Insère un nouvel élément.
+	 * insert a new element
+	 * at the end of the array
+	 * using the pecolate down feature
 	 */
 	public void insert(T x) {
 		if (size == heap.length - 1) {
 			doubleSize();
 		}
-
-		//Insère un nouvel élément à la fin de l'array
 		int pos = ++size;
-
-		//Percolate up
 		for (; pos > 1 && x.compareTo(heap[pos / 2]) < 0; pos = pos / 2) {
 			heap[pos] = heap[pos / 2];
 		}
-
 		heap[pos] = x;
 	}
 
@@ -131,12 +128,19 @@ public class TasBinaire<T extends Comparable<T>> extends ABinaryStack<T> impleme
 		}
 	}
 
+	/**
+	 * Double the size of the heap
+	 */
 	private void doubleSize() {
 		T[] old = heap;
 		heap = (T[]) new Comparable[heap.length * 2];
 		System.arraycopy(old, 1, heap, 1, size);
 	}
 
+	/**
+	 * Describe the current stack state
+	 * @return the described state
+	 */
 	public String toString() {
 		String out = "";
 		for (int k = 1; k <= size; k++) {

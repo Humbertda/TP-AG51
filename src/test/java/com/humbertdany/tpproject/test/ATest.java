@@ -1,7 +1,9 @@
 package com.humbertdany.tpproject.test;
 
 /**
- * Created by Dany on 14/11/2016.
+ * The ATest class
+ * Every TP launcher extends this class
+ * it give important methods to
  */
 abstract public class ATest {
 

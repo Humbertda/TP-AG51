@@ -1,12 +1,10 @@
 package com.humbertdany.tpproject.test;
 
 import com.humbertdany.tpproject.util.chrono.Chrono;
-import com.humbertdany.tpproject.util.factory.ArrayFactory;
 import com.humbertdany.tpproject.util.generator.ArrayListGenerator;
 import com.humbertdany.tpproject.util.sort.*;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  *
@@ -50,7 +48,7 @@ public class TestSortingAlgorithm<T extends Comparable> extends ATest {
 			    log("  Testing for an array of dimension " + dimension);
 			    try {
 				    for(int j = 0; j < this.sortingAlgo.size(); j++){
-					    final ArrayList<T> generated = this.gen.generate(dimension);
+					    final List<T> generated = this.gen.generate(dimension);
 					    final T[] ts = generated.toArray(this.gen.buildArray(generated.size()));
 					    final ResultEntry currentAlgo = results.get(j);
 					    final ASortingAlgorithm<T> algo = currentAlgo.getAlgo();
