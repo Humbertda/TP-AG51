@@ -1,21 +1,28 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.humbertdany.tpproject.util.generator;
 
 import com.humbertdany.tpproject.util.factory.ArrayFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  * @author dhumbert
  */
 abstract public class ArrayListGenerator<T extends Comparable> extends ArrayFactory<T> {
+
+	/**
+	 * Build an object T
+     * @return the built object T
+     */
     abstract T buildObject();
-    
-    final public ArrayList<T> generate(final int count){
+
+	/**
+	 * Build 'count' object and return them into a List
+     * @param count the number of object
+     * @return the generated objects
+     */
+    final public List<T> generate(final int count){
         final ArrayList<T> res = new ArrayList<>();
         for(int i = 0; i < count; i++){
             res.add(this.buildObject());

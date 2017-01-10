@@ -4,7 +4,7 @@ import com.humbertdany.tpproject.util.binarystack.ABinaryStack;
 import com.humbertdany.tpproject.util.factory.ArrayFactory;
 
 /**
- *
+ * @deprecated
  * @author dhumbert
  */
 public class BinaryStack<T extends Node> extends ABinaryStack<T> {
@@ -96,5 +96,20 @@ public class BinaryStack<T extends Node> extends ABinaryStack<T> {
 	 */
 	public T getRoot(){
 		return this.root;
+	}
+
+	@Override
+	public T deleteMin() {
+		return null; // TODO
+	}
+
+	@Override
+	public T getMin() {
+		return null; // TODO
+	}
+
+	@Override
+	public void insert(T t) {
+		// TODO
 	}
 }

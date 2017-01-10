@@ -1,10 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.humbertdany.tpproject.util.prioritystack;
 
-import com.humbertdany.tpproject.util.binarystack.v1.BinaryStack;
+import com.humbertdany.tpproject.util.binarystack.v2.TasBinaire;
 import com.humbertdany.tpproject.util.factory.ArrayFactory;
 
 /**
@@ -13,43 +9,40 @@ import com.humbertdany.tpproject.util.factory.ArrayFactory;
  */
 public class PriorityStack {
 	
-	final private BinaryStack<StackNode> tree;
+	final private TasBinaire<StackNode> tree;
 	
 	public PriorityStack(){
-		tree = new BinaryStack<>(new ArrayFactory<StackNode>() {
+		tree = new TasBinaire<>(new ArrayFactory<StackNode>() {
 			@Override
 			public StackNode[] buildArray(int dimension) {
 				return new StackNode[dimension];
 			}
-		}, new StackNode("root"));
-		// TODO:: implements this
-		// What I could check:  http://codereview.stackexchange.com/questions/98105/priority-stack-in-java
+		});
 	}
 	
 	/**
 	 * Insert a Node in the Stack with a given Priority
-	 * @param toInsert : the Node 
-	 * @param x  : the Priority
+	 * @param toInsert : the Node
 	 */
-	public void insert(final StackNode toInsert, int x){
-		tree.add(tree.getRoot(), toInsert, BinaryStack.ORIENTATION_LEFT); //TODO
+	public void insert(final StackNode toInsert){
+		tree.insert(toInsert);
 	}
 	
 	/**
-	 * Get the Node with the maximum priority without removing it from the Stack
-	 * @return T : the maximum priority Node
-	 */
-	public StackNode maximum(){
-		return tree.getRoot(); //TODO
-	}
-	
-	/**
-	 * Get the Node with the maximm priority and remove it from the Stack
+	 * Get the Node with the minimum priority and remove it from the Stack
 	 * (e.g: the action is taken from the stack and executed so we don't need it after)
-	 * @return T : the maximum priority Node
+	 * @return the minimum priority Node
 	 */
-	public StackNode extractMax(){
-		return tree.getRoot(); //TODO
+	public StackNode extractMin(){
+		return tree.deleteMin();
+	}
+
+	/**
+	 * Get the minimum element value
+	 * @return the minimum value
+	 */
+	public StackNode getMin(){
+		return tree.getMin();
 	}
 	
 }

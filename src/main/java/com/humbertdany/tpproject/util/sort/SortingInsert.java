@@ -1,19 +1,15 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.humbertdany.tpproject.util.sort;
 
 import com.humbertdany.tpproject.util.factory.ArrayFactory;
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.Collection;
 
 /**
- *
+ * @implNote Tri par Insertion
  * @author dhumbert
  */
-public class SortingInsert<T extends Comparable> extends ASortingAlgorithm<T> {
+public class SortingInsert<T extends Comparable<T>> extends ASortingAlgorithm<T> {
 
 	public SortingInsert(final ArrayFactory<T> arrayFactory){
 		super(arrayFactory);

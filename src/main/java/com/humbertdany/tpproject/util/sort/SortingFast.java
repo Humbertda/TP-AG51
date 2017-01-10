@@ -1,18 +1,15 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.humbertdany.tpproject.util.sort;
 
 import com.humbertdany.tpproject.util.factory.ArrayFactory;
+
 import java.util.Arrays;
 import java.util.Collection;
 
 /**
- *
+ * @implNote Tri Rapide
  * @author dhumbert
  */
-public class SortingFast<T extends Comparable> extends ASortingAlgorithm<T>{
+public class SortingFast<T extends Comparable<T>> extends ASortingAlgorithm<T>{
 
 	private T array[];
     private int length;

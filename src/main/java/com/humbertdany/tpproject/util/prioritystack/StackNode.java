@@ -6,9 +6,9 @@ import com.humbertdany.tpproject.util.binarystack.v1.Node;
  * StackNode used in the priority stack
  * Created by Dany on 12/10/2016.
  */
-public class StackNode extends Node<String> {
+public class StackNode extends Node<Integer> {
 
-	public StackNode(final String key) {
+	public StackNode(final Integer key) {
 		super(key);
 	}
 

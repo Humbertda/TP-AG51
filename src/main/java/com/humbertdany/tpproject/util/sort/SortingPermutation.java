@@ -1,49 +1,45 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.humbertdany.tpproject.util.sort;
 
 import com.humbertdany.tpproject.util.factory.ArrayFactory;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 /**
- *
- * @author dhumbert
+ * The Bubble Sort
+ * @implNote Tri par Permutation
+ * @author Dany
+ * @param <T>
  */
-public class SortingPermutation<T extends Comparable> extends ASortingAlgorithm<T>{
+public class SortingPermutation<T extends Comparable<T>> extends ASortingAlgorithm<T> {
 
-	public SortingPermutation(final ArrayFactory<T> arrayFactory){
+	public SortingPermutation(ArrayFactory<T> arrayFactory) {
 		super(arrayFactory);
 	}
-	
-    @Override
-    public Collection<T> sort(T[] toSort) {
-	    bogoSort(toSort);
-        return Arrays.asList(toSort);
-    }
 
-
-	/**
-	 * Sorts array a[0..n-1] using Bogo sort
-	 * @param a
-	 */
-	private void bogoSort(T[] a)
-	{
-		// if array is not sorted then shuffle the
-		// array again
-		while (!isSorted(a)) {
-			shuffle(a);
-		}
+	@Override
+	public String getAlgorithmName() {
+		return "Permutation";
 	}
-    
-    @Override 
-    public String getAlgorithmName(){
-        return "Permutation"; 
-    }
-    
+
+	@Override
+	public Collection<T> sort(T[] toSort) {
+		final T[] sorted = toSort;
+		permutationSort(sorted);
+		return Arrays.asList(sorted);
+	}
+
+	private void permutationSort(T[] toSort) {
+		// Début
+		for (int i = 1; i <= toSort.length-1; i += 1 ) {
+			int j = i;
+			T val = toSort[i];
+			while ( j > 0 && toSort[j-1].compareTo(val) > 0 ) {
+				toSort[j] = toSort[j-1];
+				j = j-1;
+			} // Fin while
+			toSort[j] = val ; // pas de test, ici plus lourd que l’affectation
+		} // Fin for
+	}
+
 }
