@@ -22,7 +22,7 @@ public class ArrayListIntegerGenerator extends ArrayListGenerator<Integer>{
     }
 
     @Override
-    Integer buildObject() {
+    public final Integer buildObject() {
         return random.nextInt((max - min) + 1) + min;
     }
 

@@ -1,9 +1,6 @@
 package com.humbertdany.tpproject;
 
-import com.humbertdany.tpproject.test.ATest;
-import com.humbertdany.tpproject.test.TestHash;
-import com.humbertdany.tpproject.test.TestPriorityStack;
-import com.humbertdany.tpproject.test.TestSortingAlgorithm;
+import com.humbertdany.tpproject.test.*;
 import com.humbertdany.tpproject.util.generator.ArrayListIntegerGenerator;
 
 /**
@@ -40,6 +37,9 @@ public class App {
 			case "3":
 				tp3();
 				break;
+			case "4":
+				tp4();
+				break;
 			default:
 				throw new CaseApplicationNotFoundException("The TP n°" + s + " could not be found.");
 		}
@@ -57,6 +57,11 @@ public class App {
 
 	private static void tp3(){
 		final TestHash test = new TestHash(25);
+		test.launch();
+	}
+
+	private static void tp4(){
+		final GraphTest test = new GraphTest(50, 500);
 		test.launch();
 	}
 

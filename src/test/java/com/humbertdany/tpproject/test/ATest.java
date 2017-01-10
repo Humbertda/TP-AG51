@@ -2,6 +2,7 @@ package com.humbertdany.tpproject.test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -9,7 +10,7 @@ import java.util.TreeMap;
  * Every TP launcher extends this class
  * it give important methods to
  */
-abstract public class ATest<T extends Comparable<T>>{
+abstract public class ATest<T>{
 
 	abstract public void launch();
 
@@ -62,6 +63,29 @@ abstract public class ATest<T extends Comparable<T>>{
 		final Type getElem() {
 			return elem;
 		}
+	}
+
+	protected final class ClassicResultEntry extends AResultEntry<String>{
+
+		private final String info;
+
+		ClassicResultEntry(String a, String info) {
+			super(a);
+			this.info = info;
+		}
+
+		@Override
+		void displayResults() {
+			final StringBuilder sb = new StringBuilder();
+			sb.append("Here is the results for ").append(getElem()).append(" algorithm : \n");
+			for(Map.Entry<Integer, List<Long>> entry : getResult().entrySet()){
+				sb.append("   ").append("For a dimension of ").append(entry.getKey()).append(", ").append(info).append(" ms :   ")
+						.append(this.getAverageExecutionTime(entry.getValue())).append("ms\n")
+				;
+			}
+			log(sb);
+		}
+
 	}
 
 }
