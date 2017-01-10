@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.humbertdany.tpproject.test;
 
 import com.humbertdany.tpproject.util.binarystack.v1.BinaryStack;

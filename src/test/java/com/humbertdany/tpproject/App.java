@@ -56,7 +56,7 @@ public class App {
 	}
 
 	private static void tp3(){
-		final TestHash test = new TestHash();
+		final TestHash test = new TestHash(25);
 		test.launch();
 	}
 
