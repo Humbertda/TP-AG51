@@ -6,10 +6,10 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- *
+ * @implNote Tru Shell
  * @author dhumbert
  */
-public class SortingShell<T extends Comparable> extends ASortingAlgorithm<T> {
+public class SortingShell<T extends Comparable<T>> extends ASortingAlgorithm<T> {
 
 	public SortingShell(final ArrayFactory<T> arrayFactory) {
 		super(arrayFactory);

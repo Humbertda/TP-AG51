@@ -10,40 +10,48 @@ import java.util.*;
  *
  * @author dhumbert
  */
-public class TestSortingAlgorithm<T extends Comparable> extends ATest {
+public class TestSortingAlgorithm<T extends Comparable<T>> extends ATest<T> {
     
     private final ArrayList<ASortingAlgorithm<T>> sortingAlgo;
 	private final ArrayListGenerator<T> gen;
 
-	public final int NUMBER_OF_TEST = 25;
+	private final int numberOfTotalTest;
 
     /**
      *
      */
-    public TestSortingAlgorithm(final ArrayListGenerator<T> gen){
+    public TestSortingAlgorithm(final ArrayListGenerator<T> gen, final int numberOfTotalTest){
+	    this.numberOfTotalTest = numberOfTotalTest;
         this.sortingAlgo = new ArrayList<>();
 	    this.gen = gen;
         sortingAlgo.addAll(Arrays.asList( 
-            new SortingInsert<>(this.gen),
-            //new SortingPermutation<>(this.gen),
-            new SortingShell<>(this.gen),
-            new SortingFusion<>(this.gen),
-            new SortingFast<>(this.gen)
+	            new SortingInsert<>(this.gen),
+		        new SortingSelect<>(this.gen),
+	            new SortingPermutation<>(this.gen),
+		        new SortingFast<>(this.gen),
+	            new SortingShell<>(this.gen),
+	            new SortingFusion<>(this.gen),
+		        new SortingStack<>(this.gen)
         ));
     }
 
     final public void launch(){
 
 	    ArrayList<Integer> dimensionToTest = new ArrayList<>();
-	    dimensionToTest.addAll(Arrays.asList(1000,2000,3000,5000,10000,20000,50000,100000));
+
+	    dimensionToTest.add(1000);
+
+	    for(int i = 5000; i < 100000; i+=5000){
+		    dimensionToTest.add(i);
+	    }
 
 	    final Map<Integer, ResultEntry> results = new HashMap<>();
 	    for(int i = 0; i < this.sortingAlgo.size(); i++){
 		    results.put(i, new ResultEntry(this.sortingAlgo.get(i)));
 	    }
 
-	    for(int i = 0 ; i < NUMBER_OF_TEST; i++){
-		    log("Running iteration " + (i+1) + " of " + NUMBER_OF_TEST);
+	    for(int i = 0 ; i < numberOfTotalTest; i++){
+		    log("Running iteration " + (i+1) + " of " + numberOfTotalTest);
 		    for(int dimension : dimensionToTest){
 			    log("  Testing for an array of dimension " + dimension);
 			    try {
@@ -51,7 +59,7 @@ public class TestSortingAlgorithm<T extends Comparable> extends ATest {
 					    final List<T> generated = this.gen.generate(dimension);
 					    final T[] ts = generated.toArray(this.gen.buildArray(generated.size()));
 					    final ResultEntry currentAlgo = results.get(j);
-					    final ASortingAlgorithm<T> algo = currentAlgo.getAlgo();
+					    final ASortingAlgorithm<T> algo = currentAlgo.getElem();
 					    log("      Running test for algorithm " + algo.getAlgorithmName());
 					    final Chrono chr = new Chrono();
 					    chr.start();
@@ -78,47 +86,22 @@ public class TestSortingAlgorithm<T extends Comparable> extends ATest {
 
     }
 
-	private class ResultEntry {
+	private class ResultEntry extends AResultEntry<ASortingAlgorithm<T>> {
 
-		private final ASortingAlgorithm<T> algo;
-
-		private final TreeMap<Integer, List<Long>> result = new TreeMap<>();
-
-		ResultEntry(final ASortingAlgorithm<T> a){
-			this.algo = a;
-		}
-
-		void add(int arrayDimension, long results){
-			if(!result.containsKey(arrayDimension)){
-				result.put(arrayDimension, new ArrayList<>());
-			}
-			this.result.get(arrayDimension).add(results);
+		ResultEntry(ASortingAlgorithm<T> a) {
+			super(a);
 		}
 
 		void displayResults(){
 			final StringBuilder sb = new StringBuilder();
-			sb.append("Here is the results for the ").append(algo.getAlgorithmName()).append(" algorithm : \n");
-			for(Map.Entry<Integer, List<Long>> entry : result.entrySet()){
+			sb.append("Here is the results for the ").append(getElem().getAlgorithmName()).append(" algorithm : \n");
+			for(Map.Entry<Integer, List<Long>> entry : getResult().entrySet()){
 				sb      .append("   ").append("For a dimension of ").append(entry.getKey())
 						.append(", the algorithm sorted the array in average in ms :   ")
 						.append(this.getAverageExecutionTime(entry.getValue())).append("ms\n")
 				;
 			}
 			log(sb);
-		}
-
-		long getAverageExecutionTime(final List<Long> results){
-			int numberOfRes = result.size();
-			long totalDuration = 0;
-			for(long l : results){
-				totalDuration += l;
-			}
-			return totalDuration/numberOfRes;
-		}
-
-
-		ASortingAlgorithm<T> getAlgo() {
-			return algo;
 		}
 	}
     

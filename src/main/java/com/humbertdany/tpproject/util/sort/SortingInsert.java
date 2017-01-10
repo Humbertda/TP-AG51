@@ -6,10 +6,10 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- *
+ * @implNote Tri par Insertion
  * @author dhumbert
  */
-public class SortingInsert<T extends Comparable> extends ASortingAlgorithm<T> {
+public class SortingInsert<T extends Comparable<T>> extends ASortingAlgorithm<T> {
 
 	public SortingInsert(final ArrayFactory<T> arrayFactory){
 		super(arrayFactory);

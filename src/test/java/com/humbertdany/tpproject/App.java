@@ -1,9 +1,6 @@
 package com.humbertdany.tpproject;
 
-import com.humbertdany.tpproject.test.ATest;
-import com.humbertdany.tpproject.test.TestBinaryStack;
-import com.humbertdany.tpproject.test.TestHash;
-import com.humbertdany.tpproject.test.TestSortingAlgorithm;
+import com.humbertdany.tpproject.test.*;
 import com.humbertdany.tpproject.util.generator.ArrayListIntegerGenerator;
 
 /**
@@ -12,6 +9,8 @@ import com.humbertdany.tpproject.util.generator.ArrayListIntegerGenerator;
  * (Check run configuration for more+)
  */
 public class App {
+
+	private static final int NUMBER_OF_TEST = 25;
     
     public static void main( String[] args ){
 	    for (final String s : args) {
@@ -46,12 +45,12 @@ public class App {
 	}
 	
 	private static void tp1(){
-        final TestSortingAlgorithm<Integer> algoTest = new TestSortingAlgorithm<>(new ArrayListIntegerGenerator());
+        final TestSortingAlgorithm<Integer> algoTest = new TestSortingAlgorithm<>(new ArrayListIntegerGenerator(), NUMBER_OF_TEST);
 		algoTest.launch();
 	}
 	
 	private static void tp2(){
-		final TestBinaryStack test = new TestBinaryStack();
+		final TestPriorityStack test = new TestPriorityStack(NUMBER_OF_TEST);
 		test.launch();
 	}
 

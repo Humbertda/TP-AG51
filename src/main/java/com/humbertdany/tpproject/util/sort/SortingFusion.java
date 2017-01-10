@@ -6,10 +6,10 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- *
+ * @implNote Tri par Fusion
  * @author dhumbert
  */
-public class SortingFusion<T extends Comparable> extends ASortingAlgorithm<T>{
+public class SortingFusion<T extends Comparable<T>> extends ASortingAlgorithm<T>{
 
 	public SortingFusion(final ArrayFactory<T> arrayFactory){
 		super(arrayFactory);

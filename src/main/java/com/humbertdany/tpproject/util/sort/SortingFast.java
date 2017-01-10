@@ -6,10 +6,10 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- *
+ * @implNote Tri Rapide
  * @author dhumbert
  */
-public class SortingFast<T extends Comparable> extends ASortingAlgorithm<T>{
+public class SortingFast<T extends Comparable<T>> extends ASortingAlgorithm<T>{
 
 	private T array[];
     private int length;

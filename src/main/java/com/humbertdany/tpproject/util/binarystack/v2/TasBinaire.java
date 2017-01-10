@@ -1,6 +1,7 @@
 package com.humbertdany.tpproject.util.binarystack.v2;
 
 import com.humbertdany.tpproject.util.binarystack.ABinaryStack;
+import com.humbertdany.tpproject.util.binarystack.v1.Node;
 import com.humbertdany.tpproject.util.factory.ArrayFactory;
 
 import java.io.Serializable;
@@ -9,7 +10,7 @@ import java.io.Serializable;
  * Tas Binaire v2
  * Class used in TP2
  */
-public class TasBinaire<T extends Comparable<T>> extends ABinaryStack<T> implements Serializable {
+public class TasBinaire<T extends Node> extends ABinaryStack<T> implements Serializable {
 
 	private static final int CAPACITY = 2;
 
@@ -72,7 +73,7 @@ public class TasBinaire<T extends Comparable<T>> extends ABinaryStack<T> impleme
 	 */
 	public void heapSort(T[] array) {
 		size = array.length;
-		heap = (T[]) new Comparable[size + 1];
+		heap = getArrayFactory().buildArray(size + 1);
 		System.arraycopy(array, 0, heap, 1, size);
 		buildHeap();
 
@@ -133,7 +134,7 @@ public class TasBinaire<T extends Comparable<T>> extends ABinaryStack<T> impleme
 	 */
 	private void doubleSize() {
 		T[] old = heap;
-		heap = (T[]) new Comparable[heap.length * 2];
+		heap = getArrayFactory().buildArray(heap.length * 2);
 		System.arraycopy(old, 1, heap, 1, size);
 	}
 
