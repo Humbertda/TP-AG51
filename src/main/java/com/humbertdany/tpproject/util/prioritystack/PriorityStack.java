@@ -29,12 +29,20 @@ public class PriorityStack {
 	}
 	
 	/**
-	 * Get the Node with the maximm priority and remove it from the Stack
+	 * Get the Node with the minimum priority and remove it from the Stack
 	 * (e.g: the action is taken from the stack and executed so we don't need it after)
-	 * @return T : the maximum priority Node
+	 * @return the minimum priority Node
 	 */
 	public StackNode extractMin(){
 		return tree.deleteMin();
+	}
+
+	/**
+	 * Get the minimum element value
+	 * @return the minimum value
+	 */
+	public StackNode getMin(){
+		return tree.getMin();
 	}
 	
 }

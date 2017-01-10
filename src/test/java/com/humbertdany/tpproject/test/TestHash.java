@@ -9,6 +9,9 @@ import java.util.Arrays;
 
 final public class TestHash extends ATest {
 
+	/**
+	 * TODO implement this and test
+	 */
 	@Override
 	public void launch() {
 

@@ -6,5 +6,7 @@ package com.humbertdany.tpproject.util.binarystack;
  * @param <T>
  */
 public interface IBinaryStack<T extends Comparable> {
-
+	T deleteMin();
+	T getMin();
+	void insert(T t);
 }

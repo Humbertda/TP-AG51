@@ -102,6 +102,14 @@ public class TasBinaire<T extends Node> extends ABinaryStack<T> implements Seria
 		return min;
 	}
 
+	@Override
+	public T getMin() throws RuntimeException {
+		if (size == 0) {
+			throw new RuntimeException();
+		}
+		return heap[1];
+	}
+
 	/**
 	 * insert a new element
 	 * at the end of the array

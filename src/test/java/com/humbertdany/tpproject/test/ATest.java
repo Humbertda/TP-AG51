@@ -1,10 +1,7 @@
 package com.humbertdany.tpproject.test;
 
-import com.humbertdany.tpproject.util.sort.ASortingAlgorithm;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 /**

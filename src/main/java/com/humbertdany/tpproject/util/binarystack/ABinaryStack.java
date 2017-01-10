@@ -2,7 +2,7 @@ package com.humbertdany.tpproject.util.binarystack;
 
 import com.humbertdany.tpproject.util.factory.ArrayFactory;
 
-public class ABinaryStack<T extends Comparable> implements IBinaryStack<T> {
+abstract public class ABinaryStack<T extends Comparable> implements IBinaryStack<T> {
 
 	/**
 	 * the array factory to gen anything needed

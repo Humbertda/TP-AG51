@@ -20,7 +20,6 @@ public class TestPriorityStack extends ATest<Integer> {
 	}
 
 	/**
-	 * TODO:: implements this
 	 * @implNote : we will extract the min
 	 * since our BinaryTree is extracting the min element
 	 */
@@ -34,20 +33,31 @@ public class TestPriorityStack extends ATest<Integer> {
 		}
 
 		// Result entry
-		final ResultEntry linearResultsInsert = new ResultEntry("Linear", "l'insertion a été faite en ms");
-		final ResultEntry stackResultInsert = new ResultEntry("Tas Binaire", "l'insertion a été faite en ms");
-		final ResultEntry linearResultExtractMin = new ResultEntry("Linear", "let ExtractMin de l'élément max a été faite en ms");
-		final ResultEntry stackResultExtractMin = new ResultEntry("Tas Binaire", "let ExtractMin de l'élément max a été faite en ms");
+		String insertionStr = "l'insertion a été faite en ms";
+		String extractStr = "le ExtractMin de l'élément max a été faite en ms";
+		String getStr = "le getMin de l'élément max a été faite en ms";
+		final ResultEntry linearResultsInsert = new ResultEntry("Linear", insertionStr);
+		final ResultEntry stackResultInsert = new ResultEntry("Tas Binaire", insertionStr);
+		final ResultEntry linearResultExtractMin = new ResultEntry("Linear", extractStr);
+		final ResultEntry stackResultExtractMin = new ResultEntry("Tas Binaire", extractStr);
+		final ResultEntry linearResultGetMin = new ResultEntry("Linear", getStr);
+		final ResultEntry stackResultGetMin = new ResultEntry("Tas Binaire", getStr);
+
+
 		try {
 			for (Integer d : dimensionToTest) {
 				log("Running dimension : " + d);
 				for (int nTest = 0; nTest < numberOfTest; nTest++) {
-					// Generate a random array
+
+					// Generate a random array of dimension 'd'
 					final List<Integer> generatedArray = gen.generate(d);
-					// To test
+
+					// Init the chrono to record the execution time
+					final Chrono chr = new Chrono();
+
+					// Init the structure to test
 					final PriorityStack pStack = new PriorityStack();
 					final Integer[] linearArray = new Integer[d];
-					final Chrono chr = new Chrono();
 
 					// Insertion Test
 
@@ -67,21 +77,40 @@ public class TestPriorityStack extends ATest<Integer> {
 					chr.stop();
 					linearResultsInsert.add(d, chr.getMilliSec());
 
-					// Get max Test
+					// get min test
 
 					chr.start();
-					final StackNode stackNode = pStack.extractMin();
+					final StackNode stackNode = pStack.getMin();
+					chr.stop();
+					stackResultGetMin.add(d, chr.getMilliSec());
+
+					chr.start();
+					final Integer integer = getMin(linearArray);
+					chr.stop();
+					linearResultGetMin.add(d, chr.getMilliSec());
+
+					// Make sure both elements returned are the same
+					if (!Objects.equals(stackNode.getKey(), integer)) {
+						throw new Exception("Object not equals " + stackNode.getKey() + " and " + integer);
+					}
+
+					// extract min test
+
+					chr.start();
+					final StackNode stackNodeExtracted = pStack.extractMin();
 					chr.stop();
 					stackResultExtractMin.add(d, chr.getMilliSec());
 
 					chr.start();
-					final Integer integer = extractMin(linearArray);
+					final Integer extractedMin = extractMin(linearArray);
 					chr.stop();
 					linearResultExtractMin.add(d, chr.getMilliSec());
 
-					if (!Objects.equals(stackNode.getKey(), integer)) {
-						throw new Exception("Object not equals " + stackNode.getKey() + " and " + integer);
+					// Make sure both elements returned are the same
+					if (!Objects.equals(stackNodeExtracted.getKey(), extractedMin)) {
+						throw new Exception("Object not equals " + stackNodeExtracted.getKey() + " and " + extractedMin);
 					}
+
 
 				}
 			}
@@ -90,9 +119,22 @@ public class TestPriorityStack extends ATest<Integer> {
 			stackResultInsert.displayResults();
 			stackResultExtractMin.displayResults();
 			linearResultExtractMin.displayResults();
+			stackResultGetMin.displayResults();
+			linearResultGetMin.displayResults()
+			;
 		} catch (Exception e){
 			log(e.getMessage());
 		}
+	}
+
+	private Integer getMin(Integer[] linearArray) {
+		Integer min = linearArray[0];
+		for(int i = 1; i < linearArray.length; i++){
+			if(linearArray[i] < min) {
+				min = linearArray[i];
+			}
+		}
+		return min;
 	}
 	
 	private Integer extractMin(Integer[] linearArray) {
