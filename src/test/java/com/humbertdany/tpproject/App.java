@@ -61,7 +61,7 @@ public class App {
 	}
 
 	private static void tp4(){
-		final GraphTest test = new GraphTest(50, 500);
+		final GraphTest test = new GraphTest(50);
 		test.launch();
 	}
 
