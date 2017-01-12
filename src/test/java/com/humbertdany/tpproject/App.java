@@ -51,17 +51,17 @@ public class App {
 	}
 	
 	private static void tp2(){
-		final TestPriorityStack test = new TestPriorityStack(50);
+		final TestPriorityStack test = new TestPriorityStack(1000);
 		test.launch();
 	}
 
 	private static void tp3(){
-		final TestHash test = new TestHash(25);
+		final TestHash test = new TestHash(30);
 		test.launch();
 	}
 
 	private static void tp4(){
-		final GraphTest test = new GraphTest(50);
+		final GraphTest test = new GraphTest(50, false);
 		test.launch();
 	}
 

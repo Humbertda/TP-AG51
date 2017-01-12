@@ -1,13 +1,12 @@
 package com.humbertdany.tpproject.test;
 
 import com.humbertdany.tpproject.util.chrono.Chrono;
+import com.humbertdany.tpproject.util.generator.ArrayListIntegerGenerator;
 import com.humbertdany.tpproject.util.generator.RandomStringGenerator;
-import com.humbertdany.tpproject.util.hash.HashEntryEmptyException;
 import com.humbertdany.tpproject.util.hash.HashMap;
+import com.humbertdany.tpproject.util.hash.Keyable;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 final public class TestHash extends ATest<String> {
 
@@ -21,78 +20,65 @@ final public class TestHash extends ATest<String> {
 	public void launch() {
 
 		/**
-		 * Step 1: check if the HashMap is working
-		 */
-		log("\nCheck if the HashMap is working: \n");
-
-		final HashMap<String> map = new HashMap<>(50);
-		map.put(4, "Salut");
-		map.put(7, "Comment ça va?");
-		map.put(40, RandomStringGenerator.gen(30));
-		map.put(22, RandomStringGenerator.gen(100));
-		map.readAll();
-
-		/**
-		 * Step 2: Compare the speed on large dimensions
+		 * Compare the speed on large dimensions
 		 * with simple java ArrayList
 		 */
 		log("\n Compare the speed on large dimensions with simple java ArrayList\n");
 
-		ResultEntry reHashMap = new ResultEntry("HashMap", "The HashMap got the value in ms : ");
-		ResultEntry reFlatStructure = new ResultEntry("Flat Structure", "The classic Flat Structure got the value in ms : ");
+		ClassicResultEntry reHashMap = new ClassicResultEntry("HashMap", "The HashMap got the value in");
+		ClassicResultEntry reFlatStructure = new ClassicResultEntry("Flat Structure", "The classic Flat Structure got the value in");
 
 		try {
-			for (Integer dimension : Arrays.asList(100, 10000, 1000000)) {
+			for (int dimension = 100; dimension <= 1500000; dimension = new Double(dimension * 3).intValue()) {
 				for (int currentTestID = 0; currentTestID < nbTest; currentTestID++) {
-					final int indexLook = dimension - 10; // defined by hand.
 
-					log("Running test for both structures full, containing " + dimension + " elements");
+					log("Running test nb " + currentTestID + " for both structures full, containing " + dimension + " elements");
 
 					// Init structures
-					final HashMap<String> largeMap = new HashMap<>(dimension);
-					final String[] largeList = new String[dimension];
+					final HashMap<Integer, KeyStorable> largeMap = new HashMap<>(dimension);
+					final KeyStorable[] largeList = new KeyStorable[dimension];
 
 					// Fill both list
 					final Chrono chrGen = new Chrono();
 					chrGen.start();
 					for (int i = 0; i < dimension; i++) {
-						final String randomized = RandomStringGenerator.gen(5);
-						largeMap.put(i, randomized);
-						largeList[i] = randomized;
+						final String randomized = RandomStringGenerator.gen(2);
+						largeMap.put(i, new KeyStorable(i, randomized));
+						largeList[i] = new KeyStorable(i, randomized);
 					}
 					chrGen.stop();
 
-					log("The map and the list have been randomly generated in " + chrGen.getMilliSec() + " milli-seconds");
+					final ArrayListIntegerGenerator integerGenerator = new ArrayListIntegerGenerator(0, dimension-1);
 
 					// Put the index we are looking
-					String valueArrayList = "Test ArrayList";
-					String valueHashMap = "Test HashMap";
-					largeList[indexLook] = valueArrayList;
-					largeMap.put(indexLook, valueHashMap);
+					// (We can be sure there are unique here, since it is longer then 5 letters)
+					final Integer idWeAreLooking = integerGenerator.buildObject();
+					KeyStorable valueArrayList = new KeyStorable(idWeAreLooking, "Test ArrayList");
+					KeyStorable valueHashMap = new KeyStorable(idWeAreLooking, "Test HashMap");
+					largeList[idWeAreLooking] = valueArrayList;
+					largeMap.put(idWeAreLooking, valueHashMap);
 
 					// Start the test
 					final Chrono chrMap = new Chrono();
 					chrMap.start();
-					String sMap;
-					try {
-						sMap = largeMap.get(indexLook);
-					} catch (HashEntryEmptyException e) {
-						// this should not happen since we just settled it
-						e.printStackTrace();
-						sMap = "";
+					Integer sMap = largeMap.searchValue(object -> object.key, valueHashMap);
+					if(!Objects.equals(sMap, idWeAreLooking) || !Objects.equals(largeMap.get(sMap).value, valueHashMap.value)){
+						throw new Exception("HashMap did not get the correct value");
 					}
 					chrMap.stop();
 
-					if (!sMap.equals(valueHashMap)) {
-						throw new Exception("HashMap did not get the correct value");
-					}
-
 					final Chrono chrList = new Chrono();
 					chrList.start();
-					String sList = largeList[indexLook];
+					Integer keySearch = -1;
+					for(KeyStorable s : largeList){
+						if(s.equals(valueArrayList)){
+							keySearch = s.key;
+							break;
+						}
+					}
 					chrList.stop();
 
-					if (!sList.equals(valueArrayList)) {
+					if (!keySearch.equals(idWeAreLooking) || !Objects.equals(largeList[keySearch].value, valueArrayList.value)) {
 						throw new Exception("ArrayList did not get the correct value");
 					}
 
@@ -112,25 +98,14 @@ final public class TestHash extends ATest<String> {
 
 	}
 
-	private final class ResultEntry extends AResultEntry<String>{
+	private final static class KeyStorable {
 
-		private final String info;
+		private final Integer key;
+		private final String value;
 
-		ResultEntry(String a, String info) {
-			super(a);
-			this.info = info;
-		}
-
-		@Override
-		void displayResults() {
-			final StringBuilder sb = new StringBuilder();
-			sb.append("Here is the results for ").append(getElem()).append(" algorithm : \n");
-			for(Map.Entry<Integer, List<Long>> entry : getResult().entrySet()){
-				sb.append("   ").append("For a dimension of ").append(entry.getKey()).append(", ").append(info).append(" ms :   ")
-						.append(this.getAverageExecutionTime(entry.getValue())).append("ms\n")
-				;
-			}
-			log(sb);
+		KeyStorable(Integer key, String value) {
+			this.key = key;
+			this.value = value;
 		}
 
 	}

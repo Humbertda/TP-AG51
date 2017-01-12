@@ -1,14 +1,15 @@
 package com.humbertdany.tpproject.util.hash;
 
 import java.lang.reflect.Array;
+import java.util.Objects;
 
 /**
  * The HashMap class
  * @param <T>
  */
-public class HashMap<T> {
+public class HashMap<T, K> {
 
-	final private HashEntry<T>[] table;
+	final private HashEntry<T, K>[] table;
 	final private int dimension;
 
 	/**
@@ -17,7 +18,7 @@ public class HashMap<T> {
 	 */
 	public HashMap(final int dim) {
 		this.dimension = dim;
-		table = (HashEntry<T>[]) Array.newInstance(HashEntry.class, dim);
+		table = (HashEntry<T, K>[]) Array.newInstance(HashEntry.class, dim);
 		for (int i = 0; i < dimension; i++)
 			table[i] = null;
 	}
@@ -28,12 +29,12 @@ public class HashMap<T> {
 	 * @return the value stored at 'key'
 	 * @throws HashEntryEmptyException
 	 */
-	public synchronized T get(int key) throws HashEntryEmptyException {
-		int hash = (key % dimension);
-		while (table[hash] != null && table[hash].getKey() != key)
+	public synchronized K get(T key) throws HashEntryEmptyException {
+		int hash = getHash(key);
+		while (table[hash] != null && !Objects.equals(table[hash].getKey(), key))
 			hash = (hash + 1) % dimension;
 		if (table[hash] == null)
-			throw new HashEntryEmptyException(key);
+			throw new HashEntryEmptyException(key.toString());
 		else
 			return table[hash].getValue();
 	}
@@ -43,26 +44,35 @@ public class HashMap<T> {
 	 * @param key the key where to put it
 	 * @param value the value tu store
 	 */
-	public synchronized void put(int key, T value) {
-		int hash = (key % dimension);
-		while (table[hash] != null && table[hash].getKey() != key)
+	public synchronized void put(T key, K value) {
+		int hash = getHash(key);
+		while (table[hash] != null && !Objects.equals(table[hash].getKey(), key))
 			hash = (hash + 1) % dimension;
 		table[hash] = new HashEntry<>(key, value);
 	}
 
+	private int getHash(T key){
+		return Objects.hash(key) % dimension;
+	}
+
 	/**
-	 * Read the entire map
-	 * Works as the toString()
+	 * Search a value in the HashMap
+	 * @param keyable the keyable to get the real key
+	 * @param value the value so search
+	 * @return the key
+	 * @throws HashEntryEmptyException
 	 */
-	public synchronized final void readAll(){
-		for(int i = 0; i < this.dimension; i++){
-			try {
-				System.out.println("[key:"+ i +"] " + this.get(i));
-			} catch (HashEntryEmptyException e) {
-				// We dont care if its empty,
-				// we just want to parse it all
+	public final T searchValue(Keyable<T, K> keyable, K value) throws HashEntryEmptyException {
+		final T key = keyable.getKey(value);
+		int iteration = 0;
+		do {
+			this.get(key);
+			if(this.get(key).equals(value)){
+				return key;
 			}
-		}
+			iteration ++;
+		} while(iteration <= dimension);
+		throw new HashEntryEmptyException("Unable to find entry for " + value.toString());
 	}
 
 }

@@ -8,9 +8,11 @@ import com.humbertdany.tpproject.util.graph.parser.KruskalAlgorithm;
 public class GraphTest extends ATest<Graph>{
 
 	private final int numberOfTestToPerform;
+	private final boolean shouldTestMSP;
 
-	public GraphTest(int numberOfTestToPerform){
+	public GraphTest(int numberOfTestToPerform, boolean shouldTestMSP){
 		this.numberOfTestToPerform = numberOfTestToPerform;
+		this.shouldTestMSP = shouldTestMSP;
 	}
 
 	@Override
@@ -21,7 +23,7 @@ public class GraphTest extends ATest<Graph>{
 		final ClassicResultEntry bdsResultEntry = new ClassicResultEntry("Graph BDS", "the bds executed from root in average in");
 		final ClassicResultEntry mstResultEntry = new ClassicResultEntry("Minimum Spanning Tree", "the minimum spanning tree search has executed in");
 
-		for(int numberOfVertex = 100; numberOfVertex <= 10000 ; numberOfVertex = new Double(numberOfVertex * 1.5).intValue()) {
+		for(int numberOfVertex = 100; numberOfVertex <= 10000 ; numberOfVertex = new Double(numberOfVertex * 1.8).intValue()) {
 			final int numberOfEdges = numberOfVertex * 12;
 			final ArrayListIntegerGenerator costGenerator = new ArrayListIntegerGenerator(0, 1000);
 			final ArrayListIntegerGenerator vertexIdGenerator = new ArrayListIntegerGenerator(0, numberOfVertex - 1);
@@ -65,17 +67,22 @@ public class GraphTest extends ATest<Graph>{
 				chr.stop();
 				bdsResultEntry.add(numberOfVertex, chr.getMilliSec());
 
-				chr.start();
-				final KruskalAlgorithm<VData> vDataKruskalAlgorithm = new KruskalAlgorithm<>();
-				vDataKruskalAlgorithm.getMinimumSpanningTreeAlgorithm(graph);
-				chr.stop();
-				mstResultEntry.add(numberOfVertex, chr.getMilliSec());
+				if(shouldTestMSP){
+					chr.start();
+					final KruskalAlgorithm<VData> vDataKruskalAlgorithm = new KruskalAlgorithm<>();
+					vDataKruskalAlgorithm.getMinimumSpanningTreeAlgorithm(graph);
+					chr.stop();
+					mstResultEntry.add(numberOfVertex, chr.getMilliSec());
+				}
+
 			}
 		}
 
 		dsfResultEntry.displayResults();
 		bdsResultEntry.displayResults();
-		mstResultEntry.displayResults();
+		if(shouldTestMSP){
+			mstResultEntry.displayResults();
+		}
 
 	}
 
