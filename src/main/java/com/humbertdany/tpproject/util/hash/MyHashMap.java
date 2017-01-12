@@ -4,19 +4,19 @@ import java.lang.reflect.Array;
 import java.util.Objects;
 
 /**
- * The HashMap class
+ * The MyHashMap class
  * @param <T>
  */
-public class HashMap<T, K> {
+public class MyHashMap<T, K> {
 
 	final private HashEntry<T, K>[] table;
 	final private int dimension;
 
 	/**
-	 * Construct the HashMap with a given dimension
+	 * Construct the MyHashMap with a given dimension
 	 * @param dim the dimensions
 	 */
-	public HashMap(final int dim) {
+	public MyHashMap(final int dim) {
 		this.dimension = dim;
 		table = (HashEntry<T, K>[]) Array.newInstance(HashEntry.class, dim);
 		for (int i = 0; i < dimension; i++)
@@ -56,7 +56,7 @@ public class HashMap<T, K> {
 	}
 
 	/**
-	 * Search a value in the HashMap
+	 * Search a value in the MyHashMap
 	 * @param keyable the keyable to get the real key
 	 * @param value the value so search
 	 * @return the key
