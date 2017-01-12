@@ -4,15 +4,26 @@ import com.humbertdany.tpproject.util.chrono.Chrono;
 import com.humbertdany.tpproject.util.generator.ArrayListIntegerGenerator;
 import com.humbertdany.tpproject.util.graph.*;
 import com.humbertdany.tpproject.util.graph.parser.KruskalAlgorithm;
+import com.humbertdany.tpproject.util.graph.parser.PrimAlgorithm;
 
 public class GraphTest extends ATest<Graph>{
 
 	private final int numberOfTestToPerform;
 	private final boolean shouldTestMSP;
+	private final int maxVertexNumber;
 
-	public GraphTest(int numberOfTestToPerform, boolean shouldTestMSP){
+	public GraphTest(int numberOfTestToPerform, boolean shouldTestMSP, int maxVertexNumber){
 		this.numberOfTestToPerform = numberOfTestToPerform;
 		this.shouldTestMSP = shouldTestMSP;
+		this.maxVertexNumber = maxVertexNumber;
+	}
+
+	public static GraphTest withMsp(){
+		return new GraphTest(1, true, 500);
+	}
+
+	public static GraphTest withoutMsp() {
+		return new GraphTest(50, false, 10000);
 	}
 
 	@Override
@@ -21,9 +32,10 @@ public class GraphTest extends ATest<Graph>{
 		final Chrono chr = new Chrono();
 		final ClassicResultEntry dsfResultEntry = new ClassicResultEntry("Graph DSF", "the dsf executed from root in average in");
 		final ClassicResultEntry bdsResultEntry = new ClassicResultEntry("Graph BDS", "the bds executed from root in average in");
-		final ClassicResultEntry mstResultEntry = new ClassicResultEntry("Minimum Spanning Tree", "the minimum spanning tree search has executed in");
+		final ClassicResultEntry mstKruskalResultEntry = new ClassicResultEntry("Kruskal MST", "the minimum spanning tree search has executed in");
+		final ClassicResultEntry mstPrimResultEntry = new ClassicResultEntry("Prim MST", "the minimum spanning tree search has executed in");
 
-		for(int numberOfVertex = 100; numberOfVertex <= 10000 ; numberOfVertex = new Double(numberOfVertex * 1.8).intValue()) {
+		for(int numberOfVertex = 100; numberOfVertex <= maxVertexNumber ; numberOfVertex = new Double(numberOfVertex * 1.8).intValue()) {
 			final int numberOfEdges = numberOfVertex * 12;
 			final ArrayListIntegerGenerator costGenerator = new ArrayListIntegerGenerator(0, 1000);
 			final ArrayListIntegerGenerator vertexIdGenerator = new ArrayListIntegerGenerator(0, numberOfVertex - 1);
@@ -35,7 +47,7 @@ public class GraphTest extends ATest<Graph>{
 
 				// Adding 100 random vertex
 				for (int i = 0; i < numberOfVertex; i++) {
-					final VVertex vertex = new VVertex("Vertex ID " + i + " dim"+numberOfVertex, new VData());
+					final VVertex vertex = new VVertex("Vertex ID " + i + " dim"+numberOfVertex, i, new VData());
 					graph.addVertex(vertex);
 					if (i == 0) {
 						graph.setRootVertex(vertex);
@@ -72,16 +84,24 @@ public class GraphTest extends ATest<Graph>{
 					final KruskalAlgorithm<VData> vDataKruskalAlgorithm = new KruskalAlgorithm<>();
 					vDataKruskalAlgorithm.getMinimumSpanningTreeAlgorithm(graph);
 					chr.stop();
-					mstResultEntry.add(numberOfVertex, chr.getMilliSec());
+					mstKruskalResultEntry.add(numberOfVertex, chr.getMilliSec());
+
+					chr.start();
+					final PrimAlgorithm<VData> vDataPrimlAlgorithm = new PrimAlgorithm<>();
+					vDataPrimlAlgorithm.getMinimumSpanningTreeAlgorithm(graph);
+					chr.stop();
+					mstPrimResultEntry.add(numberOfVertex, chr.getMilliSec());
 				}
 
 			}
 		}
 
-		dsfResultEntry.displayResults();
-		bdsResultEntry.displayResults();
 		if(shouldTestMSP){
-			mstResultEntry.displayResults();
+			mstKruskalResultEntry.displayResults();
+			mstPrimResultEntry.displayResults();
+		} else {
+			dsfResultEntry.displayResults();
+			bdsResultEntry.displayResults();
 		}
 
 	}
@@ -92,8 +112,8 @@ public class GraphTest extends ATest<Graph>{
 
 	private final class VVertex extends Vertex<VData>{
 
-		VVertex(String n, VData data){
-			super(n, data);
+		VVertex(String n, Integer id, VData data){
+			super(n, id, data);
 		}
 
 		@Override

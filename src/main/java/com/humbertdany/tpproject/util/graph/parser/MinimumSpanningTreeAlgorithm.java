@@ -1,10 +1,15 @@
 package com.humbertdany.tpproject.util.graph.parser;
 
+import com.humbertdany.tpproject.util.graph.Edge;
 import com.humbertdany.tpproject.util.graph.Graph;
+import com.humbertdany.tpproject.util.graph.Vertex;
 import com.humbertdany.tpproject.util.graph.VertexData;
 
+import java.util.List;
+
 public interface MinimumSpanningTreeAlgorithm<T extends VertexData> {
-	double[][] getMinimumSpanningTreeAlgorithm(Graph<T> graph);
+
+	List<Edge<T>> getMinimumSpanningTreeAlgorithm(Graph<T> graph);
 
 	/**
 	 * Get a String description of the spanning tree
@@ -28,4 +33,5 @@ public interface MinimumSpanningTreeAlgorithm<T extends VertexData> {
 		}
 		return sb.toString();
 	}
+
 }

@@ -2,157 +2,132 @@ package com.humbertdany.tpproject.util.graph.parser;
 
 import com.humbertdany.tpproject.util.graph.Edge;
 import com.humbertdany.tpproject.util.graph.Graph;
-import com.humbertdany.tpproject.util.graph.Vertex;
 import com.humbertdany.tpproject.util.graph.VertexData;
 
 import java.util.*;
 
-public class KruskalAlgorithm<T extends VertexData> implements MinimumSpanningTreeAlgorithm<T> {
+public class KruskalAlgorithm<T extends VertexData> extends AMinimumSpanningTreeAlgorithm<T> {
 
 	@Override
-	public double[][] getMinimumSpanningTreeAlgorithm(Graph<T> graph) {
+	public List<Edge<T>> getMinimumSpanningTreeAlgorithm(Graph<T> graph) {
 		final KruskalSolver s = new KruskalSolver(graph);
-		return s.kruskalAlgorithm();
+		return s.KruskalMST();
+	}
+
+
+	// A class to represent a subset for union-find
+	static private class subset {
+		int parent, rank;
 	}
 
 	/**
 	 * Inspired from http://www.sanfoundry.com/java-program-find-mst-using-kruskals-algorithm/
 	 */
-	private final class KruskalSolver {
-		private static final int MAX_VALUE = 999;
+	final class KruskalSolver {
 
-		private final ArrayList<Edge<T>> edges;
-		private final List<Vertex<T>> vertices;
-		private final int numberOfVertices;
-		private int visited[];
-		private final Map<String, Integer> mapNameToId;
-
-		private final double spanning_tree[][];
-		private final double adjacency_matrix[][];
+		int V, E;    // V-> no. of vertices & E->no.of edges
+		Edge edge[]; // collection of all edges
 
 		KruskalSolver(final Graph<T> graph) {
-			vertices = new ArrayList<>(graph.getVerticies());
-			edges = new ArrayList<>(graph.getEdges());
-			numberOfVertices = vertices.size() - 1;
-			adjacency_matrix = new double[vertices.size() + 1][vertices.size() + 1];
-			for (int i = 1; i <= vertices.size() - 1; i++) {
-				for (int j = 1; j <= vertices.size() - 1; j++) {
-					adjacency_matrix[i][j] = vertices.get(i).getCostTo(vertices.get(j));
-					if (i == j) {
-						adjacency_matrix[i][j] = 0;
-						continue;
-					}
-					if (adjacency_matrix[i][j] == 0) {
-						adjacency_matrix[i][j] = MAX_VALUE;
-					}
-				}
+			V = graph.getVerticies().size();
+			E = graph.getEdges().size();
+			int i = 0;
+			edge = new Edge[E];
+			for(Edge<T> e :  graph.getEdges()){
+				edge[i] = e;
+				i++;
 			}
-			mapNameToId = new HashMap<>();
-			int counter = 0;
-			for(Vertex v : vertices){
-				mapNameToId.put(v.getName(), counter);
-				counter++;
-			}
-			visited = new int[this.numberOfVertices + 1];
-			spanning_tree = new double[numberOfVertices + 1][numberOfVertices + 1];
 		}
 
-		double[][] kruskalAlgorithm() {
-			boolean finished = false;
-			Collections.sort(edges, new EdgeComparator());
-			CheckCycle checkCycle = new CheckCycle();
-			for (Edge edge : edges)
+		// A utility function to find set of an element i
+		// (uses path compression technique)
+		int find(subset subsets[], int i) {
+			// find root and make root as parent of i (path compression)
+			if (subsets[i].parent != i)
+				subsets[i].parent = find(subsets, subsets[i].parent);
+
+			return subsets[i].parent;
+		}
+
+		// A function that does union of two sets of x and y
+		// (uses union by rank)
+		void Union(subset subsets[], int x, int y) {
+			int xroot = find(subsets, x);
+			int yroot = find(subsets, y);
+
+			// Attach smaller rank tree under root of high rank tree
+			// (Union by Rank)
+			if (subsets[xroot].rank < subsets[yroot].rank)
+				subsets[xroot].parent = yroot;
+			else if (subsets[xroot].rank > subsets[yroot].rank)
+				subsets[yroot].parent = xroot;
+
+				// If ranks are same, then make one as root and increment
+				// its rank by one
+			else
 			{
-				double cost = edge.getCost();
-				spanning_tree[mapNameToId.get(edge.getFrom().getName())][mapNameToId.get(edge.getTo().getName())] = cost;
-				spanning_tree[mapNameToId.get(edge.getTo().getName())][mapNameToId.get(edge.getFrom().getName())] = cost;
-				if (checkCycle.checkCycle(spanning_tree, mapNameToId.get(edge.getFrom().getName()))) {
-					spanning_tree[mapNameToId.get(edge.getFrom().getName())][mapNameToId.get(edge.getTo().getName())] = 0;
-					spanning_tree[mapNameToId.get(edge.getTo().getName())][mapNameToId.get(edge.getFrom().getName())] = 0;
-					continue;
-				}
-				visited[mapNameToId.get(edge.getFrom().getName())] = 1;
-				visited[mapNameToId.get(edge.getTo().getName())] = 1;
-				for (int aVisited : visited) {
-					if (aVisited == 0) {
-						finished = false;
-						break;
-					} else {
-						finished = true;
-					}
-				}
-				if (finished)
-					break;
+				subsets[yroot].parent = xroot;
+				subsets[xroot].rank++;
 			}
-			return spanning_tree;
 		}
 
-	}
+		// The main function to construct MST using Kruskal's algorithm
+		List<Edge<T>> KruskalMST() {
+			Edge result[] = new Edge[V];  // Tnis will store the resultant MST
+			int e = 0;  // An index variable, used for result[]
+			int i = 0;  // An index variable, used for sorted edges
 
-	/**
-	 * CheckCycle class
-	 */
-	private final class CheckCycle {
-		private Stack<Integer> stack;
-		private double adjacencyMatrix[][];
+			// Step 1:  Sort all the edges in non-decreasing order of their
+			// weight.  If we are not allowed to change the given graph, we
+			// can create a copy of array of edges
+			Arrays.sort(edge, (p1, p2) -> {
+				if (p1.getCost() < p2.getCost()) return -1;
+				if (p1.getCost() > p2.getCost()) return 1;
+				return 0;
+			});
 
-		CheckCycle() {
-			stack = new Stack<>();
-		}
+			// Allocate memory for creating V ssubsets
+			subset subsets[] = new subset[V];
+			for(i=0; i<V; ++i)
+				subsets[i]=new subset();
 
-		boolean checkCycle(double adjacency_matrix[][], int source) {
-			int number_of_nodes = adjacency_matrix[source].length - 1;
-
-			adjacencyMatrix = new double[number_of_nodes + 1][number_of_nodes + 1];
-			for (int sourceVertex = 1; sourceVertex <= number_of_nodes; sourceVertex++) {
-				System.arraycopy(adjacency_matrix[sourceVertex], 1, adjacencyMatrix[sourceVertex], 1, number_of_nodes);
+			// Create V subsets with single elements
+			for (int v = 0; v < V; ++v)
+			{
+				subsets[v].parent = v;
+				subsets[v].rank = 0;
 			}
 
-			int visited[] = new int[number_of_nodes + 1];
-			int element = source;
-			int i = source;
-			visited[source] = 1;
-			stack.push(source);
+			i = 0;  // Index used to pick next edge
 
-			while (!stack.isEmpty()) {
-				element = stack.peek();
-				i = element;
-				while (i <= number_of_nodes) {
-					if (adjacencyMatrix[element][i] >= 1 && visited[i] == 1) {
-						if (stack.contains(i)) {
-							return true;
-						}
-					}
-					if (adjacencyMatrix[element][i] >= 1 && visited[i] == 0)
-					{
-						stack.push(i);
-						visited[i] = 1;
-						adjacencyMatrix[element][i] = 0;// mark as labelled;
-						adjacencyMatrix[i][element] = 0;
-						element = i;
-						i = 1;
-						continue;
-					}
-					i++;
+			// Number of edges to be taken is equal to V-1
+			while (e < V - 1) {
+				// Step 2: Pick the smallest edge. And increment the index
+				// for next iteration
+				Edge next_edge = edge[i++];
+
+				int x = find(subsets, next_edge.getFrom().getId());
+				int y = find(subsets, next_edge.getTo().getId());
+
+				// If including this edge does't cause cycle, include it
+				// in result and increment the index of result for next edge
+				if (x != y)
+				{
+					result[e++] = next_edge;
+					Union(subsets, x, y);
 				}
-				stack.pop();
+				// Else discard the next_edge
 			}
-			return false;
-		}
-	}
 
-	/**
-	 * Edge Comparator
-	 */
-	private final class EdgeComparator implements Comparator<Edge> {
-		@Override
-		public int compare(Edge edge1, Edge edge2) {
-			if (edge1.getCost() < edge2.getCost())
-				return -1;
-			if (edge1.getCost() > edge2.getCost())
-				return 1;
-			return 0;
+			// print the contents of result[] to display the built MST
+			ArrayList<Edge<T>> edgesResults = new ArrayList<>();
+ 			for (i = 0; i < e; ++i) {
+			    edgesResults.add(result[i]);
+		    }
+
+			return edgesResults;
 		}
+
 	}
 
 }

@@ -38,7 +38,13 @@ public class App {
 				tp3();
 				break;
 			case "4":
-				tp4();
+			case "4a":
+				tp4a();
+				if(s.equals("4a")){
+					break;
+				}
+			case "4b":
+				tp4b();
 				break;
 			default:
 				throw new CaseApplicationNotFoundException("The TP n°" + s + " could not be found.");
@@ -60,8 +66,13 @@ public class App {
 		test.launch();
 	}
 
-	private static void tp4(){
-		final GraphTest test = new GraphTest(50, false);
+	private static void tp4a(){
+		final GraphTest test = GraphTest.withoutMsp();
+		test.launch();
+	}
+
+	private static void tp4b(){
+		final GraphTest test = GraphTest.withMsp();
 		test.launch();
 	}
 

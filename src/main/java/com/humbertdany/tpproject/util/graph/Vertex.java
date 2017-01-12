@@ -24,6 +24,9 @@ public class Vertex<T> implements ChangeObserver {
 	@JsonIgnore
 	private List<Edge<T>> outgoingEdges;
 
+	@JsonIgnore
+	final private Integer id;
+
 	@JsonInclude
 	private String name;
 
@@ -37,24 +40,6 @@ public class Vertex<T> implements ChangeObserver {
 	private T data;
 
 	/**
-	 * Calls this(null, null).
-	 */
-	@JsonIgnore
-	public Vertex() {
-		this(null, null);
-	}
-
-	/**
-	 * Create a vertex with the given name and no data
-	 *
-	 * @param n
-	 */
-	@JsonIgnore
-	public Vertex(String n) {
-		this(n, null);
-	}
-
-	/**
 	 * Create a Vertex with name n and given data
 	 *
 	 * @param n -
@@ -63,9 +48,10 @@ public class Vertex<T> implements ChangeObserver {
 	 *          data associated with vertex
 	 */
 	@JsonIgnore
-	public Vertex(String n, T data) {
+	public Vertex(String n, Integer id, T data) {
 		incomingEdges = new ArrayList<>();
 		outgoingEdges = new ArrayList<>();
+		this.id = id;
 		name = n;
 		mark = false;
 		this.setData(data);
@@ -76,6 +62,10 @@ public class Vertex<T> implements ChangeObserver {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	public Integer getId() {
+		return id;
 	}
 
 	/**
