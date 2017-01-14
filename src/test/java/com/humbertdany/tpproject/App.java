@@ -46,6 +46,9 @@ public class App {
 			case "4b":
 				tp4b();
 				break;
+			case "5":
+				tp5();
+				break;
 			default:
 				throw new CaseApplicationNotFoundException("The TP n°" + s + " could not be found.");
 		}
@@ -73,6 +76,11 @@ public class App {
 
 	private static void tp4b(){
 		final GraphTest test = GraphTest.withMsp();
+		test.launch();
+	}
+	
+	private static void tp5(){
+		final ArnTest test = ArnTest.defaultTest();
 		test.launch();
 	}
 
