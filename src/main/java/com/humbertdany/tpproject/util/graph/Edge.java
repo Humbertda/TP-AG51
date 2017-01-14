@@ -66,7 +66,7 @@ public class Edge<T> {
 	 * @return cost of the edge
 	 */
 	@JsonInclude
-	public double getCost() {
+	public Double getCost() {
 		return this.getFrom().getCostTo(this.getTo());
 	}
 

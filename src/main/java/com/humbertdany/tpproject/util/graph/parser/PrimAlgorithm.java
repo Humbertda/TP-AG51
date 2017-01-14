@@ -2,99 +2,59 @@ package com.humbertdany.tpproject.util.graph.parser;
 
 import com.humbertdany.tpproject.util.graph.Edge;
 import com.humbertdany.tpproject.util.graph.Graph;
+import com.humbertdany.tpproject.util.graph.Vertex;
 import com.humbertdany.tpproject.util.graph.VertexData;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class PrimAlgorithm<T extends VertexData> extends AMinimumSpanningTreeAlgorithm<T> {
-
-// TODO MAKE SURE THE ALGORITHM IS WORKING
+	
+	// TODO MAKE SURE THE ALGORITHM IS WORKING
 	@Override
 	public List<Edge<T>> getMinimumSpanningTreeAlgorithm(Graph<T> graph) {
 		Prims p = new Prims(graph);
 		return p.primMST();
 	}
-
-
+	
+	
 	private final class Prims {
-		// Number of vertices in the graph
-		private final int V;
-		private final double[][] graph;
-
+		
+		private final Graph<T> graph;
+		
 		Prims(Graph<T> g){
-			graph = getAgencyMatrixForGraph(g);
-			V = graph.length;
+			graph = g;
+			if (graph == null)
+				throw (new NullPointerException("Graph must be non-NULL."));
 		}
-
-		// A utility function to find the vertex with minimum key
-		// value, from the set of vertices not yet included in MST
-		int minKey(int key[], Boolean mstSet[]) {
-			// Initialize min value
-			int min = Integer.MAX_VALUE, min_index = -1;
-
-			for (int v = 0; v < V; v++)
-				if (!mstSet[v] && key[v] < min) {
-					min = key[v];
-					min_index = v;
-				}
-
-			return min_index;
-		}
-
-		// Function to construct and print MST for a graph represented
-		//  using adjacency matrix representation
-		List<Edge<T>> primMST() {
-			// Array to store constructed MST
-			int parent[] = new int[V];
-
-			// Key values used to pick minimum weight edge in cut
-			int key[] = new int[V];
-
-			// To represent set of vertices not yet included in MST
-			Boolean mstSet[] = new Boolean[V];
-
-			// Initialize all keys as INFINITE
-			for (int i = 0; i < V; i++) {
-				key[i] = Integer.MAX_VALUE;
-				mstSet[i] = false;
+		
+		/**
+		 * @implNote Prim's algorithm only works on undirected graphs
+		 * @return the MST
+		 */
+		List<Edge<T>> primMST () {
+			
+			final Set<Vertex<T>> unvisited = new HashSet<>();
+			unvisited.addAll(graph.getVerticies().values());
+			unvisited.remove(graph.getRootVertex()); // O(1)
+			
+			final List<Edge<T>> path = new ArrayList<>();
+			final Queue<Edge<T>> edgesAvailable = new PriorityQueue<>((o1, o2) -> o1.getCost().compareTo(o2.getCost()));
+			
+			Vertex<T> vertex = graph.getRootVertex();
+			while (!unvisited.isEmpty()) {
+				// Add all edges to unvisited vertices
+				edgesAvailable.addAll(vertex.getOutgoingEdges().stream().filter(e -> unvisited.contains(e.getTo())).collect(Collectors.toList()));
+				
+				// Remove the lowest cost edge
+				final Edge<T> e = edgesAvailable.remove();
+				path.add(e); // O(1)
+				vertex = e.getTo();
+				unvisited.remove(vertex); // O(1)
 			}
-
-			// Always include first 1st vertex in MST.
-			key[0] = 0;     // Make key 0 so that this vertex is
-			// picked as first vertex
-			parent[0] = -1; // First node is always root of MST
-
-			// The MST will have V vertices
-			for (int count = 0; count < V - 1; count++) {
-				// Pick thd minimum key vertex from the set of vertices
-				// not yet included in MST
-				int u = minKey(key, mstSet);
-
-				// Add the picked vertex to the MST Set
-				mstSet[u] = true;
-
-				// Update key value and parent index of the adjacent
-				// vertices of the picked vertex. Consider only those
-				// vertices which are not yet included in MST
-				for (int v = 0; v < V; v++)
-
-					// graph[u][v] is non zero only for adjacent vertices of m
-					// mstSet[v] is false for vertices not yet included in MST
-					// Update the key only if graph[u][v] is smaller than key[v]
-					if (graph[u][v] != 0 && !mstSet[v] &&
-							graph[u][v] < key[v]) {
-						parent[v] = u;
-						key[v] = new Double(graph[u][v]).intValue();
-					}
-			}
-
-			System.out.println("Edge   Weight");
-			for (int i = 1; i < V; i++)
-				System.out.println(parent[i] + " - " + i + "    " + graph[i][parent[i]]);
-
-			return new ArrayList<>();
+			
+			return path;
 		}
-
+		
 	}
 }

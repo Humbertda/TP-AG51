@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class Graph<T> {
 
@@ -27,7 +24,7 @@ public class Graph<T> {
 	private static final int VISIT_COLOR_BLACK = 3;
 
 	/** Vector<Vertex> of graph verticies */
-	private List<Vertex<T>> verticies;
+	private Map<Integer, Vertex<T>> verticies;
 
 	/** Vector<Edge> of edges in the graph */
 	@JsonIgnore
@@ -45,7 +42,7 @@ public class Graph<T> {
 	 */
 	@JsonIgnore
 	public Graph() {
-		verticies = new ArrayList<>();
+		verticies = new HashMap<>();
 		edges = new ArrayList<>();
 	}
 
@@ -68,13 +65,13 @@ public class Graph<T> {
 	 */
 	@JsonIgnore
 	public boolean addVertex(Vertex<T> v) {
-		boolean added = false;
-		if (!verticies.contains(v)) {
-			added = verticies.add(v);
+		if (!verticies.containsValue(v)) {
+			verticies.put(v.getId(), v);
 			notifyGraphChange();
 			v.setGraphReference(this); // allow to trigger graph change from vertex
+			return true;
 		}
-		return added;
+		return false;
 	}
 
 	/**
@@ -108,7 +105,7 @@ public class Graph<T> {
 	@JsonIgnore
 	public void setRootVertex(Vertex<T> root) {
 		this.rootVertex = root;
-		if (!verticies.contains(root))
+		if (!verticies.containsValue(root))
 			this.addVertex(root);
 		notifyGraphChange();
 	}
@@ -130,7 +127,7 @@ public class Graph<T> {
 	 *
 	 * @return the graph verticies
 	 */
-	public List<Vertex<T>> getVerticies() {
+	public Map<Integer, Vertex<T>> getVerticies() {
 		return this.verticies;
 	}
 
@@ -146,18 +143,19 @@ public class Graph<T> {
 	 */
 	@JsonIgnore
 	public boolean addEdge(Vertex<T> from, Vertex<T> to, EdgeData d) throws IllegalArgumentException {
-		if (!verticies.contains(from))
+		if (!verticies.containsValue(from))
 			throw new IllegalArgumentException("from is not in graph");
-		if (!verticies.contains(to))
+		if (!verticies.containsValue(to))
 			throw new IllegalArgumentException("to is not in graph");
-
-		Edge<T> e = new Edge<>(from, to, d);
-		if (from.findEdge(to) != null)
+		
+		Edge<T> e1 = new Edge<>(from, to, d);
+		Edge<T> e2 = new Edge<>(to, from, d);
+		if (from.findEdge(to) != null && to.findEdge(from) != null)
 			return false;
 		else {
-			from.addEdge(e);
-			to.addEdge(e);
-			edges.add(e);
+			from.addEdge(e1);
+			to.addEdge(e2);
+			edges.addAll(Arrays.asList(e1, e2));
 			notifyGraphChange();
 			return true;
 		}
@@ -182,7 +180,7 @@ public class Graph<T> {
 	 */
 	@JsonIgnore
 	public boolean removeVertex(Vertex<T> v) {
-		if (!verticies.contains(v))
+		if (!verticies.containsValue(v))
 			return false;
 
 		verticies.remove(v);
@@ -238,8 +236,7 @@ public class Graph<T> {
 	 */
 	@JsonIgnore
 	public void clearMark() {
-		for (Vertex<T> w : verticies)
-			w.clearMark();
+		verticies.values().forEach(Vertex::clearMark);
 		notifyGraphChange();
 	}
 
@@ -389,7 +386,7 @@ public class Graph<T> {
 	@JsonIgnore
 	public Vertex<T> findVertexByName(String name) {
 		Vertex<T> match = null;
-		for (Vertex<T> v : verticies) {
+		for (Vertex<T> v : verticies.values()) {
 			if (name.equals(v.getName())) {
 				match = v;
 				break;
@@ -410,7 +407,7 @@ public class Graph<T> {
 	@JsonIgnore
 	public Vertex<T> findVertexByData(T data, Comparator<T> compare) {
 		Vertex<T> match = null;
-		for (Vertex<T> v : verticies) {
+		for (Vertex<T> v : verticies.values()) {
 			if (compare.compare(data, v.getData()) == 0) {
 				match = v;
 				break;
@@ -467,8 +464,7 @@ public class Graph<T> {
 	@JsonIgnore
 	public String toString() {
 		final StringBuilder tmp = new StringBuilder("Graph[");
-		for (Vertex<T> v : verticies)
-			tmp.append(v);
+		verticies.values().forEach(tmp::append);
 		tmp.append(']');
 		return tmp.toString();
 	}

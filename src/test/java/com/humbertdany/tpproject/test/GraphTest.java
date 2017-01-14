@@ -6,6 +6,8 @@ import com.humbertdany.tpproject.util.graph.*;
 import com.humbertdany.tpproject.util.graph.parser.KruskalAlgorithm;
 import com.humbertdany.tpproject.util.graph.parser.PrimAlgorithm;
 
+import java.util.List;
+
 public class GraphTest extends ATest<Graph>{
 
 	private final int numberOfTestToPerform;
@@ -19,7 +21,7 @@ public class GraphTest extends ATest<Graph>{
 	}
 
 	public static GraphTest withMsp(){
-		return new GraphTest(1, true, 500);
+		return new GraphTest(50, true, 10000);
 	}
 
 	public static GraphTest withoutMsp() {
@@ -59,26 +61,6 @@ public class GraphTest extends ATest<Graph>{
 					graph.addEdge(graph.getVertex(vertexIdGenerator.buildObject()), graph.getVertex(vertexIdGenerator.buildObject()), new VEdgeData(costGenerator.buildObject()));
 				}
 
-				chr.start();
-				graph.dfsSpanningTree(graph.getRootVertex(), new DFSVisitor<VData>() {
-					@Override
-					public void visit(Graph<VData> g, Vertex<VData> v) {
-						execVertex(v);
-					}
-
-					@Override
-					public void visit(Graph<VData> g, Vertex<VData> v, Edge<VData> e) {
-						execVertex(v);
-					}
-				});
-				chr.stop();
-				dsfResultEntry.add(numberOfVertex, chr.getMilliSec());
-
-				chr.start();
-				graph.breadthFirstSearch(graph.getRootVertex(), (Visitor<VData>) (g, v) -> execVertex(v));
-				chr.stop();
-				bdsResultEntry.add(numberOfVertex, chr.getMilliSec());
-
 				if(shouldTestMSP){
 					chr.start();
 					final KruskalAlgorithm<VData> vDataKruskalAlgorithm = new KruskalAlgorithm<>();
@@ -91,6 +73,26 @@ public class GraphTest extends ATest<Graph>{
 					vDataPrimlAlgorithm.getMinimumSpanningTreeAlgorithm(graph);
 					chr.stop();
 					mstPrimResultEntry.add(numberOfVertex, chr.getMilliSec());
+				} else {
+					chr.start();
+					graph.dfsSpanningTree(graph.getRootVertex(), new DFSVisitor<VData>() {
+						@Override
+						public void visit(Graph<VData> g, Vertex<VData> v) {
+							execVertex(v);
+						}
+						
+						@Override
+						public void visit(Graph<VData> g, Vertex<VData> v, Edge<VData> e) {
+							execVertex(v);
+						}
+					});
+					chr.stop();
+					dsfResultEntry.add(numberOfVertex, chr.getMilliSec());
+					
+					chr.start();
+					graph.breadthFirstSearch(graph.getRootVertex(), (Visitor<VData>) (g, v) -> execVertex(v));
+					chr.stop();
+					bdsResultEntry.add(numberOfVertex, chr.getMilliSec());
 				}
 
 			}
