@@ -7,7 +7,6 @@ import com.humbertdany.tpproject.util.prioritystack.StackNode;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 
@@ -36,12 +35,12 @@ public class TestPriorityStack extends ATest<Integer> {
 		String insertionStr = "l'insertion a été faite en ms";
 		String extractStr = "le ExtractMin de l'élément max a été faite en ms";
 		String getStr = "le getMin de l'élément max a été faite en ms";
-		final ResultEntry linearResultsInsert = new ResultEntry("Linear", insertionStr);
-		final ResultEntry stackResultInsert = new ResultEntry("Tas Binaire", insertionStr);
-		final ResultEntry linearResultExtractMin = new ResultEntry("Linear", extractStr);
-		final ResultEntry stackResultExtractMin = new ResultEntry("Tas Binaire", extractStr);
-		final ResultEntry linearResultGetMin = new ResultEntry("Linear", getStr);
-		final ResultEntry stackResultGetMin = new ResultEntry("Tas Binaire", getStr);
+		final ClassicResultEntry linearResultsInsert = new ClassicResultEntry("Linear", insertionStr);
+		final ClassicResultEntry stackResultInsert = new ClassicResultEntry("Tas Binaire", insertionStr);
+		final ClassicResultEntry linearResultExtractMin = new ClassicResultEntry("Linear", extractStr);
+		final ClassicResultEntry stackResultExtractMin = new ClassicResultEntry("Tas Binaire", extractStr);
+		final ClassicResultEntry linearResultGetMin = new ClassicResultEntry("Linear", getStr);
+		final ClassicResultEntry stackResultGetMin = new ClassicResultEntry("Tas Binaire", getStr);
 
 
 		try {
@@ -156,29 +155,6 @@ public class TestPriorityStack extends ATest<Integer> {
 		}
 		linearArray = newArray;
 		return min;
-	}
-	
-	private final class ResultEntry extends AResultEntry<String>{
-
-		private final String info;
-
-		ResultEntry(String a, String info) {
-			super(a);
-			this.info = info;
-		}
-
-		@Override
-		void displayResults() {
-			final StringBuilder sb = new StringBuilder();
-			sb.append("Here is the results for ").append(getElem()).append(" algorithm : \n");
-			for(Map.Entry<Integer, List<Long>> entry : getResult().entrySet()){
-				sb.append("   ").append("For a dimension of ").append(entry.getKey()).append(", ").append(info).append(" ms :   ")
-						.append(this.getAverageExecutionTime(entry.getValue())).append("ms\n")
-				;
-			}
-			log(sb);
-		}
-
 	}
 
 }

@@ -1,9 +1,6 @@
 package com.humbertdany.tpproject;
 
-import com.humbertdany.tpproject.test.ATest;
-import com.humbertdany.tpproject.test.TestHash;
-import com.humbertdany.tpproject.test.TestPriorityStack;
-import com.humbertdany.tpproject.test.TestSortingAlgorithm;
+import com.humbertdany.tpproject.test.*;
 import com.humbertdany.tpproject.util.generator.ArrayListIntegerGenerator;
 
 /**
@@ -40,6 +37,18 @@ public class App {
 			case "3":
 				tp3();
 				break;
+			case "4":
+			case "4a":
+				tp4a();
+				if(s.equals("4a")){
+					break;
+				}
+			case "4b":
+				tp4b();
+				break;
+			case "5":
+				tp5();
+				break;
 			default:
 				throw new CaseApplicationNotFoundException("The TP n°" + s + " could not be found.");
 		}
@@ -51,12 +60,27 @@ public class App {
 	}
 	
 	private static void tp2(){
-		final TestPriorityStack test = new TestPriorityStack(50);
+		final TestPriorityStack test = new TestPriorityStack(1000);
 		test.launch();
 	}
 
 	private static void tp3(){
-		final TestHash test = new TestHash();
+		final TestHash test = new TestHash(30);
+		test.launch();
+	}
+
+	private static void tp4a(){
+		final GraphTest test = GraphTest.withoutMsp();
+		test.launch();
+	}
+
+	private static void tp4b(){
+		final GraphTest test = GraphTest.withMsp();
+		test.launch();
+	}
+	
+	private static void tp5(){
+		final ArnTest test = ArnTest.defaultTest();
 		test.launch();
 	}
 
